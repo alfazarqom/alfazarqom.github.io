@@ -1,8 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
-
-const supabaseUrl = "https://mvwflakurihhakdrlteg.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12d2ZsYWt1cmloaGFrZHJsdGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMjIwMDksImV4cCI6MjEwNDc5ODAwOX0.E09Vufp77NOkpGjJZMH6sbWYInKu_sMzV7eqHX6xQ0A";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products";
 
 const state = { products: [], page: "home" };
 const $ = (selector) => document.querySelector(selector);
@@ -120,13 +116,27 @@ async function loadProducts() {
   all.innerHTML = '<div class="loading-state"><span class="spinner"></span>Memuat katalog produk...</div>';
   $("#product-count").textContent = "Memuat produk...";
   try {
-    const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
-    if (error) throw error;
-    state.products = data || [];
+    const response = await fetch(PRODUCTS_ENDPOINT, {
+      method: "GET",
+      headers: { Accept: "application/json" }
+    });
+    if (!response.ok) {
+      throw new Error(`Permintaan katalog gagal (HTTP ${response.status}).`);
+    }
+
+    const result = await response.json();
+    if (result?.success !== true || !Array.isArray(result.data)) {
+      throw new Error("Format respons get-products tidak sesuai.");
+    }
+
+    state.products = result.data;
     renderProducts();
+    if (Number.isFinite(Number(result.total))) {
+      $("#product-count").textContent = `${state.products.length} dari ${Number(result.total)} produk`;
+    }
   } catch (error) {
     state.products = [];
-    const message = error?.message || "Terjadi kesalahan saat menghubungkan ke Supabase.";
+    const message = error?.message || "Terjadi kesalahan saat menghubungkan ke katalog produk.";
     renderError(featured, message);
     renderError(all, message);
     $("#product-count").textContent = "Katalog tidak tersedia";
