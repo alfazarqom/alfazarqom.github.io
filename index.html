@@ -1,28 +1,74 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="Asri Collection — curated fashion and accessories." />
-    <title>Asri Collection</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./style.css" />
-    <script type="importmap">
-      {
-        "imports": {
-          "react": "https://esm.sh/react@18.3.1",
-          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.57.4"
-        }
-      }
-    </script>
-    <script src="https://unpkg.com/@babel/standalone@7.26.10/babel.min.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="text/babel" data-type="module" data-presets="typescript,react" src="./App.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fbfbf8">
+  <meta name="description" content="Asri Collection — curated fashion and accessories.">
+  <title>Asri Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="root">
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand-lockup" href="#home" aria-label="Asri Collection home">
+          <span class="brand-mark">A</span>
+          <span class="brand-copy"><strong>ASRI</strong><small>COLLECTION</small></span>
+        </a>
+        <nav class="main-navigation" aria-label="Navigasi utama">
+          <button type="button" class="nav-button is-active" data-page="home" aria-current="page">Beranda</button>
+          <button type="button" class="nav-button" data-page="products">Produk</button>
+        </nav>
+        <button class="header-cta" type="button" data-page="products">Jelajahi <span aria-hidden="true">↗</span></button>
+      </header>
+
+      <main class="main-content">
+        <div class="main-content-inner">
+          <section id="home-page">
+            <section class="hero-section">
+              <div class="hero-content">
+                <p class="eyebrow hero-eyebrow"><span></span> CURATED FOR EVERYDAY ELEGANCE</p>
+                <h1>Temukan gaya yang <em>bercerita.</em></h1>
+                <p class="hero-description">Pilihan fashion dan aksesori terkurasi untuk melengkapi setiap momen, dengan karakter yang tetap terasa personal.</p>
+                <button class="button button-light" type="button" data-page="products">Jelajahi koleksi <span aria-hidden="true">↗</span></button>
+                <div class="hero-caption"><span>01 / 02</span><span>TIMELESS · CONSIDERED · YOURS</span></div>
+              </div>
+              <div class="hero-art" aria-hidden="true">
+                <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+                <div class="hero-monogram">A<span>.</span></div>
+                <div class="hero-art-caption">THE ART OF<br>EVERYDAY STYLE</div>
+              </div>
+            </section>
+            <section class="intro-strip"><p>STYLE, WITH INTENTION.</p><span>Kurasi pilihan. Detail bermakna. Gaya milikmu.</span></section>
+            <section class="section-block">
+              <div class="section-heading"><div><p class="eyebrow">PILIHAN KAMI</p><h2>Featured pieces</h2></div><button class="text-link" type="button" data-page="products">Lihat semua produk <span>↗</span></button></div>
+              <div id="featured-products" aria-live="polite"><div class="loading-state"><span class="spinner"></span>Memuat katalog produk...</div></div>
+            </section>
+          </section>
+
+          <section id="products-page" class="catalog-section" hidden>
+            <div class="catalog-heading"><p class="eyebrow">THE ASRI EDIT</p><h1>Our collection<span>.</span></h1><p>Temukan item pilihan yang menyatukan kualitas, fungsi, dan karakter.</p></div>
+            <div class="catalog-toolbar">
+              <span id="product-count">Memuat produk...</span>
+              <label class="search-field"><span aria-hidden="true">⌕</span><input id="product-search" type="search" placeholder="Cari produk..." aria-label="Cari produk"></label>
+            </div>
+            <div id="all-products" aria-live="polite"><div class="loading-state"><span class="spinner"></span>Memuat katalog produk...</div></div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="site-footer"><span class="footer-brand">ASRI COLLECTION</span><span>Considered style, made personal.</span><span>© <span id="current-year"></span> Asri Collection</span></footer>
+    </div>
+  </div>
+
+  <dialog id="product-dialog" class="product-dialog">
+    <button class="detail-close" type="button" data-close-dialog aria-label="Tutup detail">×</button>
+    <div id="product-detail-content"></div>
+  </dialog>
+  <script type="module" src="./script.js"></script>
+</body>
 </html>
