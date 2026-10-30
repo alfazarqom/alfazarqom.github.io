@@ -254,18 +254,27 @@ function App() {
   const loadProducts = async () => {
     setLoading(true);
     setError("");
-    const { data, error: queryError } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
 
-    if (queryError) {
-      setProducts([]);
-      setError(queryError.message || "Terjadi kesalahan saat menghubungkan ke Supabase.");
-    } else {
+    try {
+      const { data, error: queryError } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (queryError) throw queryError;
       setProducts((data || []) as Product[]);
+    } catch (loadError) {
+      setProducts([]);
+      const message =
+        loadError instanceof Error
+          ? loadError.message
+          : typeof loadError === "object" && loadError !== null && "message" in loadError
+            ? String(loadError.message)
+            : "Terjadi kesalahan saat menghubungkan ke Supabase.";
+      setError(message || "Terjadi kesalahan saat menghubungkan ke Supabase.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
