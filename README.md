@@ -8,7 +8,7 @@ A mobile-responsive storefront built with native HTML, CSS, and JavaScript. It i
 .
 ├── index.html   # Static page markup and semantic layout
 ├── style.css    # Responsive storefront styles
-├── script.js    # Browser interactions and Supabase product query
+├── script.js    # Browser interactions and get-products Edge Function request
 └── README.md    # Project documentation
 ```
 
@@ -17,23 +17,41 @@ A mobile-responsive storefront built with native HTML, CSS, and JavaScript. It i
 - Native HTML5 for page structure.
 - Plain CSS for layout and responsive styling.
 - Browser-native JavaScript ES modules for interactions.
-- Supabase JavaScript client loaded from esm.sh.
-- Supabase Database REST API for public product reads.
+- Supabase Edge Function for public product catalog reads.
 
-There is no compilation or bundling step. The browser needs an internet connection to load the Supabase client, Google Fonts, and remote product images.
+There is no compilation or bundling step. The browser needs an internet connection to request the product catalog and load remote product images and fonts.
 
-## Supabase connection
+## Product data source
 
-The browser client is initialized in `script.js` with the project's URL and public anon key. The storefront reads `public.products`:
+The storefront requests the Supabase Edge Function:
 
-```js
-supabase
-  .from("products")
-  .select("*")
-  .order("created_at", { ascending: false });
+```text
+GET https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products
 ```
 
-The public anon key is intended for browser use. Never expose a Supabase service-role key, secret API key, database password, or other privileged credential in this repository. Public access must be constrained by Postgres grants and Row Level Security (RLS).
+The frontend expects a JSON response with this shape:
+
+```json
+{
+  "success": true,
+  "data": [],
+  "total": 147
+}
+```
+
+The `data` array contains product records from `public.products`. The storefront does not query the table directly, initialize the Supabase JavaScript client, or include a Supabase anon key in browser code. No customer login is required for this public catalog request; the Edge Function's deployed access configuration controls endpoint access.
+
+The storefront validates the HTTP response and the `success` and `data` fields before rendering. It does not substitute hardcoded/demo products if the request fails.
+
+## Product fields used by the storefront
+
+- `id`: identifies a product for the detail dialog.
+- `title`, `brand`, `category`, `sku`: product identity and search.
+- `price`, `sale_price`, `currency`: displayed price.
+- `availability`, `stock_quantity`: availability and stock display.
+- `image_url`, `labels`, `description`: product presentation.
+
+Additional fields returned by the function may be available in the response but are not currently rendered by this storefront.
 
 ## Pages and behavior
 
@@ -41,8 +59,7 @@ The public anon key is intended for browser use. Never expose a Supabase service
 - **Products:** product catalog with search by title, brand, category, or SKU.
 - **Product details:** dialog with available product information.
 - **Responsive layout:** desktop and mobile breakpoints in `style.css`.
-
-Product records are loaded from Supabase; there is no hardcoded product fallback. If the request fails, the page displays an error state and retry action.
+- **Loading and errors:** loading state, error message, and retry action.
 
 ## Local preview
 
@@ -61,9 +78,9 @@ Configure **Settings → Pages** to publish the repository root from the product
 ## Verification checklist
 
 - [ ] GitHub Pages serves `index.html` from the repository root.
-- [ ] Browser console has no JavaScript or module-loading errors.
-- [ ] Supabase query returns rows from `public.products`.
+- [ ] Browser console has no JavaScript errors.
+- [ ] Browser request to `get-products` returns HTTP success and valid JSON.
 - [ ] Product search and detail dialog work.
 - [ ] Error and retry states work when the API is unavailable.
 - [ ] Mobile layout is usable.
-- [ ] No privileged Supabase credential is present in frontend files.
+- [ ] No Supabase privileged credential or anon key is embedded in frontend files.
