@@ -281,6 +281,21 @@ function App() {
     void loadProducts();
   }, []);
 
+  // Block legacy iOS Safari pinch-zoom gestures where the browser honors it.
+  useEffect(() => {
+    const preventGestureZoom = (event: Event) => event.preventDefault();
+
+    document.addEventListener("gesturestart", preventGestureZoom, { passive: false });
+    document.addEventListener("gesturechange", preventGestureZoom, { passive: false });
+    document.addEventListener("gestureend", preventGestureZoom, { passive: false });
+
+    return () => {
+      document.removeEventListener("gesturestart", preventGestureZoom);
+      document.removeEventListener("gesturechange", preventGestureZoom);
+      document.removeEventListener("gestureend", preventGestureZoom);
+    };
+  }, []);
+
   return (
     <div className="app-shell">
       <Header activePage={activePage} onNavigate={setActivePage} />
