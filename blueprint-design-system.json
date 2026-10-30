@@ -1,0 +1,689 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "meta": {
+    "name": "Asri Collection Design System",
+    "artifact": "blueprint-design-system.json",
+    "version": "1.0.0",
+    "status": "baseline",
+    "platform": "Responsive web storefront",
+    "design_direction": "Modern minimal, editorial, premium, mobile-first",
+    "source_of_truth": true
+  },
+  "product_context": {
+    "brand": "Asri Collection",
+    "audience": "Fashion and accessories shoppers",
+    "experience_goals": [
+      "Discover products quickly",
+      "Understand product details and availability",
+      "Shop confidently on mobile",
+      "Maintain a calm premium visual identity"
+    ],
+    "locale": "id-ID",
+    "currency": {
+      "code": "IDR",
+      "display": "Rp",
+      "fraction_digits": 0
+    }
+  },
+  "principles": [
+    "Mobile-first: design and validate the smallest viewport first.",
+    "Use semantic design tokens; avoid unexplained one-off values.",
+    "Prefer reusable components with explicit variants and states.",
+    "Prioritize product imagery, readable information hierarchy, and clear actions.",
+    "Keep interactions predictable, accessible, and touch-friendly.",
+    "Responsive layouts may change composition but must preserve meaning and task flow."
+  ],
+  "brand": {
+    "personality": [
+      "Elegant",
+      "Modern",
+      "Calm",
+      "Confident",
+      "Approachable"
+    ],
+    "visual_language": "Editorial fashion storefront with generous whitespace, restrained color, refined typography, and clear product presentation.",
+    "existing_repository_alignment": {
+      "verified_from": [
+        "index.html",
+        "style.css"
+      ],
+      "font_families": {
+        "body": "DM Sans",
+        "display": "Manrope",
+        "editorial_accent": "Georgia"
+      },
+      "base_background": "#fbfbf8",
+      "ink": "#171a17",
+      "muted": "#777d75",
+      "line": "#e8e9e3",
+      "green": "#176b45",
+      "green_dark": "#104c34",
+      "rule": "Preserve the repository's existing visual language unless a separately approved redesign changes it."
+    }
+  },
+  "foundations": {
+    "color": {
+      "palette": {
+        "brand": {
+          "green": "#176b45",
+          "green_dark": "#104c34",
+          "green_deep": "#183e2d",
+          "green_soft": "#eaf1eb"
+        },
+        "neutral": {
+          "paper": "#fbfbf8",
+          "white": "#ffffff",
+          "ink": "#171a17",
+          "muted": "#777d75",
+          "line": "#e8e9e3",
+          "gray_100": "#f3f4ef",
+          "gray_300": "#d9ded6",
+          "gray_500": "#8b9189",
+          "gray_700": "#454b45",
+          "black": "#111411"
+        },
+        "semantic": {
+          "success": "#176b45",
+          "success_bg": "#eaf1eb",
+          "warning": "#a66b16",
+          "warning_bg": "#fff6e5",
+          "danger": "#b42318",
+          "danger_bg": "#fff0ee",
+          "info": "#245ea8",
+          "info_bg": "#edf4ff"
+        }
+      },
+      "semantic_tokens": {
+        "text_primary": "{foundations.color.palette.neutral.ink}",
+        "text_secondary": "{foundations.color.palette.neutral.muted}",
+        "surface_page": "{foundations.color.palette.neutral.paper}",
+        "surface_card": "{foundations.color.palette.neutral.white}",
+        "border_default": "{foundations.color.palette.neutral.line}",
+        "action_primary": "{foundations.color.palette.brand.green}",
+        "action_primary_pressed": "{foundations.color.palette.brand.green_dark}"
+      },
+      "rules": [
+        "Use green for primary brand actions and active states.",
+        "Use semantic colors only for status feedback.",
+        "Never rely on color alone to communicate status.",
+        "Maintain WCAG 2.2 AA contrast targets."
+      ]
+    },
+    "typography": {
+      "families": {
+        "body": "DM Sans, sans-serif",
+        "display": "Manrope, sans-serif",
+        "editorial": "Georgia, Times New Roman, serif"
+      },
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700,
+        "extrabold": 800
+      },
+      "scale": {
+        "display": {
+          "size": "clamp(2.4rem, 7vw, 4.5rem)",
+          "line_height": 1.06,
+          "family": "display",
+          "weight": 500
+        },
+        "h1": {
+          "size": "clamp(2rem, 5vw, 3.5rem)",
+          "line_height": 1.12,
+          "family": "display",
+          "weight": 600
+        },
+        "h2": {
+          "size": "1.75rem",
+          "line_height": 1.2,
+          "family": "display",
+          "weight": 600
+        },
+        "h3": {
+          "size": "1.25rem",
+          "line_height": 1.3,
+          "family": "display",
+          "weight": 600
+        },
+        "body": {
+          "size": "0.875rem",
+          "line_height": 1.65,
+          "family": "body",
+          "weight": 400
+        },
+        "body_large": {
+          "size": "1rem",
+          "line_height": 1.6,
+          "family": "body",
+          "weight": 400
+        },
+        "caption": {
+          "size": "0.75rem",
+          "line_height": 1.45,
+          "family": "body",
+          "weight": 400
+        },
+        "eyebrow": {
+          "size": "0.625rem",
+          "line_height": 1.4,
+          "family": "body",
+          "weight": 700,
+          "letter_spacing": "0.14em"
+        },
+        "button": {
+          "size": "0.8125rem",
+          "line_height": 1.2,
+          "family": "body",
+          "weight": 700
+        },
+        "price": {
+          "size": "1rem",
+          "line_height": 1.25,
+          "family": "body",
+          "weight": 700
+        }
+      },
+      "rules": [
+        "Use Manrope for prominent headings and DM Sans for interface text.",
+        "Use Georgia sparingly for editorial accents.",
+        "Use tabular numerals for prices and quantities where available.",
+        "Avoid long uppercase copy; reserve letter spacing for short eyebrow labels."
+      ]
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": {
+        "0": "0px",
+        "1": "4px",
+        "2": "8px",
+        "3": "12px",
+        "4": "16px",
+        "5": "20px",
+        "6": "24px",
+        "8": "32px",
+        "10": "40px",
+        "12": "48px",
+        "16": "64px",
+        "20": "80px"
+      },
+      "page_gutter": {
+        "mobile": "20px",
+        "tablet": "32px",
+        "desktop": "clamp(32px, 6vw, 84px)"
+      },
+      "section_spacing": {
+        "mobile": "40px",
+        "desktop": "64px"
+      }
+    },
+    "sizing": {
+      "touch_target_min": "44px",
+      "control_height": {
+        "sm": "36px",
+        "md": "44px",
+        "lg": "48px"
+      },
+      "icon": {
+        "sm": "16px",
+        "md": "20px",
+        "lg": "24px"
+      },
+      "content_max_width": "1440px"
+    },
+    "radius": {
+      "none": "0px",
+      "subtle": "2px",
+      "sm": "4px",
+      "md": "8px",
+      "lg": "14px",
+      "xl": "20px",
+      "pill": "999px"
+    },
+    "elevation": {
+      "none": "none",
+      "subtle": "0 1px 3px rgba(23,26,23,.05)",
+      "card": "0 3px 12px rgba(23,26,23,.07)",
+      "overlay": "0 12px 36px rgba(23,26,23,.16)"
+    },
+    "motion": {
+      "fast": "120ms",
+      "normal": "200ms",
+      "slow": "300ms",
+      "easing": "cubic-bezier(.2, 0, 0, 1)",
+      "reduced_motion": "Respect prefers-reduced-motion."
+    },
+    "breakpoints": {
+      "mobile": "0-767px",
+      "tablet": "768-1023px",
+      "desktop": "1024-1439px",
+      "wide": "1440px and above"
+    },
+    "z_index": {
+      "base": 0,
+      "sticky": 10,
+      "header": 20,
+      "navigation": 30,
+      "overlay": 40,
+      "drawer": 50,
+      "modal": 60,
+      "toast": 70
+    }
+  },
+  "layout": {
+    "app_shell": {
+      "structure": [
+        "AppShell",
+        "Header",
+        "Main",
+        "BottomNavigation"
+      ],
+      "direction": "column",
+      "viewport_height": "100dvh",
+      "root_overflow": "hidden",
+      "main_region": "flex: 1; min-height: 0; overflow-y: auto"
+    },
+    "page_container": {
+      "width": "100%",
+      "max_width": "1440px",
+      "centered": true,
+      "horizontal_padding": "foundations.spacing.page_gutter"
+    },
+    "responsive_grid": {
+      "products": {
+        "mobile": 2,
+        "tablet": 3,
+        "desktop": 4
+      },
+      "gap": "12px"
+    },
+    "safe_area": {
+      "top": "env(safe-area-inset-top)",
+      "bottom": "env(safe-area-inset-bottom)"
+    },
+    "rules": [
+      "Prevent horizontal page overflow.",
+      "Keep scroll ownership clear: app shell stays fixed while the main content scrolls.",
+      "Use a persistent bottom navigation on mobile only when it is part of the approved app navigation.",
+      "Do not stretch mobile layouts unchanged across desktop."
+    ]
+  },
+  "navigation": {
+    "primary_destinations": [
+      "Home",
+      "Products",
+      "Orders",
+      "Livechat"
+    ],
+    "header_variants": [
+      "default",
+      "minimal",
+      "search"
+    ],
+    "bottom_navigation": {
+      "mobile": "visible when enabled by the application shell",
+      "desktop": "hidden or replaced by desktop navigation",
+      "active_state": "Use clear icon, label, and color treatment"
+    }
+  },
+  "component_library": {
+    "navigation": [
+      {
+        "name": "AppHeader",
+        "variants": [
+          "default",
+          "minimal",
+          "search"
+        ],
+        "states": [
+          "default",
+          "scrolled"
+        ]
+      },
+      {
+        "name": "BottomNavigation",
+        "states": [
+          "active",
+          "inactive"
+        ]
+      },
+      {
+        "name": "BackButton",
+        "behavior": "Browser-history aware with a safe fallback"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Button",
+        "variants": [
+          "primary",
+          "secondary",
+          "outline",
+          "ghost",
+          "danger"
+        ],
+        "sizes": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "states": [
+          "default",
+          "hover",
+          "focus",
+          "pressed",
+          "disabled",
+          "loading"
+        ]
+      },
+      {
+        "name": "IconButton",
+        "states": [
+          "default",
+          "focus",
+          "disabled"
+        ],
+        "accessibility": "Requires an accessible name"
+      },
+      {
+        "name": "TextLink",
+        "variants": [
+          "default",
+          "muted",
+          "brand"
+        ]
+      }
+    ],
+    "commerce": [
+      {
+        "name": "ProductCard",
+        "elements": [
+          "image",
+          "name",
+          "price",
+          "optional_original_price",
+          "availability",
+          "optional_wishlist_action"
+        ],
+        "variants": [
+          "grid",
+          "compact"
+        ],
+        "states": [
+          "default",
+          "unavailable",
+          "loading"
+        ]
+      },
+      {
+        "name": "ProductGallery",
+        "features": [
+          "main image",
+          "thumbnail navigation",
+          "image fallback"
+        ]
+      },
+      {
+        "name": "PriceDisplay",
+        "features": [
+          "current price",
+          "optional original price",
+          "optional discount label"
+        ]
+      },
+      {
+        "name": "AvailabilityIndicator",
+        "states": [
+          "available",
+          "unavailable"
+        ],
+        "rule": "Availability is the purchase status; stock quantity is separate information."
+      },
+      {
+        "name": "QuantitySelector",
+        "states": [
+          "default",
+          "minimum",
+          "maximum",
+          "disabled"
+        ]
+      },
+      {
+        "name": "CartItem",
+        "elements": [
+          "image",
+          "name",
+          "variant",
+          "price",
+          "quantity",
+          "remove action"
+        ]
+      },
+      {
+        "name": "OrderStatusBadge",
+        "states": [
+          "pending",
+          "paid",
+          "failed",
+          "expired",
+          "refunded",
+          "issue"
+        ]
+      }
+    ],
+    "forms": [
+      {
+        "name": "TextField",
+        "states": [
+          "default",
+          "focus",
+          "filled",
+          "error",
+          "disabled"
+        ]
+      },
+      {
+        "name": "SearchField",
+        "features": [
+          "search icon",
+          "clear action",
+          "suggestions"
+        ]
+      },
+      {
+        "name": "Checkbox",
+        "states": [
+          "unchecked",
+          "checked",
+          "disabled",
+          "error"
+        ]
+      },
+      {
+        "name": "Radio",
+        "states": [
+          "unchecked",
+          "checked",
+          "disabled"
+        ]
+      },
+      {
+        "name": "Select",
+        "states": [
+          "default",
+          "open",
+          "selected",
+          "error",
+          "disabled"
+        ]
+      }
+    ],
+    "feedback": [
+      {
+        "name": "Toast",
+        "variants": [
+          "success",
+          "error",
+          "warning",
+          "info"
+        ]
+      },
+      {
+        "name": "Alert",
+        "variants": [
+          "success",
+          "error",
+          "warning",
+          "info"
+        ]
+      },
+      {
+        "name": "Modal",
+        "behavior": [
+          "focus trap",
+          "escape handling",
+          "accessible title"
+        ]
+      },
+      {
+        "name": "Drawer",
+        "directions": [
+          "bottom",
+          "right"
+        ]
+      },
+      {
+        "name": "Skeleton",
+        "variants": [
+          "text",
+          "image",
+          "card",
+          "list"
+        ]
+      },
+      {
+        "name": "EmptyState",
+        "elements": [
+          "icon or illustration",
+          "title",
+          "description",
+          "optional action"
+        ]
+      }
+    ],
+    "content": [
+      {
+        "name": "SectionHeader",
+        "elements": [
+          "title",
+          "optional subtitle",
+          "optional action"
+        ]
+      },
+      {
+        "name": "ProductCarousel",
+        "behavior": "Horizontal scrolling with clear affordance"
+      },
+      {
+        "name": "Divider",
+        "variants": [
+          "subtle",
+          "strong"
+        ]
+      }
+    ]
+  },
+  "interaction_patterns": {
+    "product_discovery": {
+      "search": [
+        "idle",
+        "loading",
+        "results",
+        "empty",
+        "error"
+      ],
+      "filters": "Show active filters and a reset action.",
+      "sorting": "Always expose the current sort selection."
+    },
+    "shopping": {
+      "add_to_cart": "Show immediate confirmation and prevent duplicate submissions.",
+      "quantity": "Enforce valid bounds.",
+      "checkout": "Keep order summary and primary action easy to find."
+    },
+    "feedback": {
+      "loading": "Use skeletons for content regions and progress indicators for actions.",
+      "error": "Explain the problem and provide a recovery action when possible.",
+      "empty": "Explain the state and offer a relevant next action."
+    }
+  },
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "requirements": [
+      "Keyboard access for all interactive controls.",
+      "Visible focus indicators.",
+      "Semantic HTML and accessible names for icon-only controls.",
+      "Sufficient text and UI contrast.",
+      "Never communicate state by color alone.",
+      "Associate labels, helper text, and errors with form controls.",
+      "Respect reduced-motion preferences.",
+      "Aim for touch targets of at least 44x44 CSS pixels."
+    ]
+  },
+  "content_guidelines": {
+    "voice": [
+      "clear",
+      "concise",
+      "helpful",
+      "trustworthy"
+    ],
+    "product": [
+      "Keep product names descriptive and readable.",
+      "Display price consistently in Indonesian Rupiah.",
+      "Do not fabricate product data, discounts, stock, or availability.",
+      "Show availability separately from numeric stock quantity."
+    ],
+    "microcopy": [
+      "Use action-oriented labels.",
+      "Prefer specific error messages.",
+      "Avoid ambiguous actions such as 'Submit' when a clearer label is available."
+    ]
+  },
+  "implementation": {
+    "frontend_context": {
+      "framework": "React",
+      "language": "TypeScript or JavaScript according to repository baseline",
+      "styling": "CSS using centralized custom properties",
+      "icons": "Use one consistent icon library"
+    },
+    "rules": [
+      "Centralize tokens as CSS custom properties.",
+      "Use shared components for repeated UI patterns.",
+      "Represent loading, empty, error, success, and disabled states explicitly.",
+      "Keep page-specific exceptions documented.",
+      "Do not change existing application architecture as a side effect of consuming this blueprint."
+    ],
+    "quality_checks": [
+      "Validate mobile, tablet, and desktop layouts.",
+      "Check keyboard navigation and focus visibility.",
+      "Check long product names and missing images.",
+      "Check all component states.",
+      "Check safe-area behavior.",
+      "Check contrast and touch target sizes."
+    ]
+  },
+  "governance": {
+    "owner": "Project design system",
+    "change_policy": [
+      "Update this file when shared design decisions change.",
+      "Do not silently redefine existing tokens or component contracts.",
+      "Document intentional exceptions.",
+      "Review breaking changes before adoption."
+    ],
+    "versioning": {
+      "patch": "Clarifications and non-breaking corrections",
+      "minor": "Additive tokens, components, variants, or patterns",
+      "major": "Breaking changes to foundations, component contracts, or layout architecture"
+    }
+  }
+}
