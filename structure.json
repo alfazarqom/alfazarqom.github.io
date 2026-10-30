@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "meta": {
+    "name": "Asri Collection App Structure",
+    "artifact": "structure.json",
+    "version": "1.0.0",
+    "status": "baseline",
+    "purpose": "Application architecture and UI composition blueprint",
+    "source_of_truth": true,
+    "last_updated": "2026-10-30"
+  },
+  "project": {
+    "name": "Asri Collection",
+    "repository": "alfazarqom/alfazarqom.github.io",
+    "platform": "GitHub Pages",
+    "application_type": "static-web-storefront",
+    "locale": "id-ID",
+    "currency": "IDR"
+  },
+  "architecture": {
+    "pattern": "single-page static application",
+    "runtime": "browser-native HTML, CSS, and JavaScript ES modules",
+    "framework": null,
+    "language": ["HTML5", "CSS", "JavaScript"],
+    "build_required": false,
+    "routing": {
+      "type": "in-page state navigation",
+      "library": null,
+      "mechanism": "data-page controls and page visibility",
+      "implemented_pages": ["home", "products"]
+    },
+    "principles": [
+      "Keep the current no-build GitHub Pages architecture.",
+      "Keep layout ownership at the application shell level.",
+      "Separate page content, reusable UI patterns, data access, and styling responsibilities.",
+      "Render product data from the Supabase get-products Edge Function; do not add demo product fallbacks.",
+      "Treat this file as an architecture reference, not as a claim that conceptual components already exist as separate source files."
+    ]
+  },
+  "app": {
+    "root": "#root",
+    "component": "App",
+    "tree": {
+      "App": {
+        "element": "#root",
+        "children": [
+          {
+            "component": "AppShell",
+            "element": ".app-shell",
+            "children": [
+              {
+                "component": "Header",
+                "element": ".site-header",
+                "children": ["BrandLockup", "MainNavigation", "HeaderCTA"]
+              },
+              {
+                "component": "Main",
+                "element": ".main-content",
+                "children": [
+                  {
+                    "component": "MainContent",
+                    "element": ".main-content-inner",
+                    "children": [
+                      {
+                        "component": "PagesLayout",
+                        "children": [
+                          {
+                            "page": "Home",
+                            "element": "#home-page",
+                            "children": ["HeroSection", "IntroStrip", "FeaturedProductsSection"]
+                          },
+                          {
+                            "page": "Products",
+                            "element": "#products-page",
+                            "children": ["CatalogHeading", "CatalogToolbar", "ProductGrid"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "component": "Footer",
+                "element": ".site-footer"
+              }
+            ]
+          },
+          {
+            "component": "ProductDetailDialog",
+            "element": "#product-dialog",
+            "rendering": "native HTML dialog; outside the app-shell flow"
+          }
+        ]
+      }
+    }
+  },
+  "layouts": {
+    "AppShell": {
+      "implemented": true,
+      "element": ".app-shell",
+      "direction": "column",
+      "regions": ["Header", "Main", "Footer"]
+    },
+    "Main": {
+      "implemented": true,
+      "element": ".main-content",
+      "responsibility": "Primary page viewport and scrolling region"
+    },
+    "PagesLayout": {
+      "implemented": true,
+      "element": ".main-content-inner",
+      "responsibility": "Contains page sections; only the active page is visible"
+    },
+    "OverlayLayout": {
+      "implemented": "native-dialog",
+      "responsibility": "Product detail modal outside the normal document flow"
+    }
+  },
+  "pages": {
+    "Home": {
+      "implemented": true,
+      "element": "#home-page",
+      "sections": ["HeroSection", "IntroStrip", "FeaturedProductsSection"]
+    },
+    "Products": {
+      "implemented": true,
+      "element": "#products-page",
+      "sections": ["CatalogHeading", "CatalogToolbar", "ProductGrid"],
+      "features": ["ProductSearch", "ProductCount"]
+    },
+    "ProductDetail": {
+      "implemented": true,
+      "presentation": "ProductDetailDialog",
+      "element": "#product-dialog",
+      "content_element": "#product-detail-content",
+      "note": "A dialog, not a standalone route or page."
+    },
+    "Orders": {
+      "implemented": false,
+      "status": "not-in-current-repository-baseline"
+    },
+    "Livechat": {
+      "implemented": false,
+      "status": "not-in-current-repository-baseline"
+    }
+  },
+  "components": {
+    "Header": { "implemented": true, "source": "index.html" },
+    "BrandLockup": { "implemented": true, "source": "index.html" },
+    "MainNavigation": { "implemented": true, "source": "index.html", "behavior_source": "script.js" },
+    "HeaderCTA": { "implemented": true, "source": "index.html" },
+    "HeroSection": { "implemented": true, "source": "index.html" },
+    "IntroStrip": { "implemented": true, "source": "index.html" },
+    "FeaturedProductsSection": { "implemented": true, "source": "index.html" },
+    "CatalogToolbar": { "implemented": true, "source": "index.html" },
+    "ProductSearch": { "implemented": true, "source": "index.html", "behavior_source": "script.js" },
+    "ProductGrid": { "implemented": true, "source": "script.js", "style_source": "style.css" },
+    "ProductCard": { "implemented": true, "source": "script.js", "style_source": "style.css" },
+    "ProductDetailDialog": { "implemented": true, "source": "index.html", "behavior_source": "script.js" },
+    "LoadingState": { "implemented": true, "source": "index.html and script.js" },
+    "ErrorState": { "implemented": true, "source": "script.js" },
+    "EmptyState": { "implemented": true, "source": "script.js" },
+    "Footer": { "implemented": true, "source": "index.html" }
+  },
+  "data": {
+    "provider": "Supabase Edge Function",
+    "source_of_truth": "public.products",
+    "endpoint": "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products",
+    "method": "GET",
+    "client": "browser fetch",
+    "service_source": "script.js",
+    "expected_response": {
+      "success": "boolean",
+      "data": "array",
+      "total": "number"
+    },
+    "rules": [
+      "Do not query the products table directly from this frontend.",
+      "Do not add hardcoded or demo product fallback data.",
+      "Validate the HTTP response and expected JSON fields before rendering.",
+      "Keep loading, error, retry, and empty states explicit."
+    ]
+  },
+  "styles": {
+    "global_stylesheet": "style.css",
+    "design_system_blueprint": "blueprint-design-system.json",
+    "design_system_documentation": "docs/DESIGN_SYSTEM.md",
+    "responsive_strategy": "mobile-first responsive web",
+    "layout_contract": {
+      "html_body": "width: 100%; height: 100%; margin: 0",
+      "root": "#root",
+      "app_shell": "full-height flex column",
+      "main": "flexible primary content region"
+    },
+    "rule": "The design system blueprint is the source of truth for visual tokens; avoid duplicating token definitions in this file."
+  },
+  "repository_files": {
+    "index.html": "HTML document, semantic application shell, page sections, and product dialog",
+    "style.css": "Global styles, layout, components, and responsive rules",
+    "script.js": "Navigation behavior, product fetching, rendering, search, and product dialog interactions",
+    "blueprint-design-system.json": "Structured design-system source of truth",
+    "docs/DESIGN_SYSTEM.md": "Human-readable design-system documentation",
+    "structure.json": "Application structure and architecture blueprint"
+  },
+  "constraints": [
+    "Do not describe this repository as a React or Vite application; the current implementation is static HTML, CSS, and JavaScript.",
+    "Do not claim React Router, React components, TypeScript, npm, or a build pipeline are implemented.",
+    "Do not add BottomNavigation, Orders, or Livechat to the implemented tree unless the application scope is explicitly revised.",
+    "Keep the product detail experience as a dialog unless a separate route is explicitly approved.",
+    "Architecture changes must be reflected in this file when the implementation changes."
+  ]
+}
