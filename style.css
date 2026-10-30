@@ -535,3 +535,36 @@ button { -webkit-tap-highlight-color: transparent; }
   .hero-content { padding-right: 22px; padding-left: 22px; }
   .hero-caption { right: 22px; left: 22px; font-size: 7px; }
 }
+
+
+/* Native HTML dialog used for product details */
+.product-dialog {
+  position: fixed;
+  inset: 0;
+  width: min(860px, calc(100% - 32px));
+  max-width: 860px;
+  max-height: min(700px, calc(100% - 32px));
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .2);
+}
+.product-dialog::backdrop { background: rgba(12, 25, 17, .55); }
+.product-dialog .detail-panel {
+  width: 100%;
+  max-height: none;
+  box-shadow: none;
+}
+.product-dialog .detail-close { position: sticky; float: right; top: 12px; margin: 12px -46px -46px 0; }
+.product-dialog[open] { animation: dialog-in .18s ease-out; }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) {
+  .product-dialog { width: calc(100% - 24px); max-height: calc(100% - 24px); }
+  .product-dialog .detail-panel { grid-template-columns: 1fr; }
+  .product-dialog .detail-image-wrap { min-height: 240px; max-height: 300px; }
+  .product-dialog .detail-image-wrap img { max-height: 300px; }
+  .product-dialog .detail-close { position: sticky; margin: 10px -46px -46px 0; }
+}

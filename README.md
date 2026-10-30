@@ -1,99 +1,69 @@
-# Asri Collection — GitHub Pages
+# Asri Collection — Static HTML
 
-A lightweight, mobile-responsive storefront built with React, TypeScript, and Supabase. The app runs directly in the browser on GitHub Pages; it does not require Vite, Node.js, a package installation, or a build step.
+A mobile-responsive storefront built with native HTML, CSS, and JavaScript. It is hosted directly by GitHub Pages and does not use React, TypeScript, Babel, Vite, Node.js, or a build step.
 
 ## Repository structure
 
 ```text
 .
-├── index.html       # Browser entry point, import map, Babel runtime
-├── App.tsx          # React UI, page state, Supabase client and product query
-├── style.css        # Responsive storefront styles
-└── README.md        # Project documentation
+├── index.html   # Static page markup and semantic layout
+├── style.css    # Responsive storefront styles
+├── script.js    # Browser interactions and Supabase product query
+└── README.md    # Project documentation
 ```
 
 ## Technology
 
-- React 18.3.1 and React DOM, loaded as browser ES modules.
-- TypeScript + JSX, transformed in the browser by Babel Standalone.
-- Supabase JavaScript client, loaded from esm.sh.
+- Native HTML5 for page structure.
+- Plain CSS for layout and responsive styling.
+- Browser-native JavaScript ES modules for interactions.
+- Supabase JavaScript client loaded from esm.sh.
 - Supabase Database REST API for public product reads.
-- Plain CSS; no bundler or build pipeline.
 
-Dependency versions are pinned in `index.html`. The browser needs an internet connection to load the CDN-hosted dependencies and remote product images.
+There is no compilation or bundling step. The browser needs an internet connection to load the Supabase client, Google Fonts, and remote product images.
 
 ## Supabase connection
 
-The browser client is initialized in `App.tsx` with:
+The browser client is initialized in `script.js` with the project's URL and public anon key. The storefront reads `public.products`:
 
-- Project URL: `https://mvwflakurihhakdrlteg.supabase.co`
-- Public API key: the project's legacy `anon` key
-- Source table: `public.products`
-
-The app reads the table with a read-only query:
-
-```ts
+```js
 supabase
   .from("products")
   .select("*")
   .order("created_at", { ascending: false });
 ```
 
-The query reads the product columns exposed by the table, including title, brand, price, sale price, currency, description, SKU, category, availability, stock, colors, sizes, image URLs, labels, and timestamps.
-
-### API key safety
-
-The `anon` key is intentionally public and is visible in browser source. It is not a password. Never put a Supabase `service_role` key, secret API key, database password, or other privileged credential in this repository or any frontend bundle.
-
-Public access is controlled by Postgres grants and Row Level Security (RLS). The current `public.products` table has RLS enabled, an anon SELECT grant, and a SELECT policy named `Public can read all products` for `anon` and `authenticated`. This permits public read access to product rows; do not add write permissions unless a separately reviewed requirement calls for them.
-
-The Supabase project audit also detected `public.bonsoir_products_02` with RLS disabled. This app does not query that table. Review and secure it separately in Supabase; enabling RLS without the correct policies can block legitimate access, so no database changes are made by this repository.
+The public anon key is intended for browser use. Never expose a Supabase service-role key, secret API key, database password, or other privileged credential in this repository. Public access must be constrained by Postgres grants and Row Level Security (RLS).
 
 ## Pages and behavior
 
-### Home
+- **Home:** brand introduction and four featured products.
+- **Products:** product catalog with search by title, brand, category, or SKU.
+- **Product details:** dialog with available product information.
+- **Responsive layout:** desktop and mobile breakpoints in `style.css`.
 
-- Storefront hero and brand introduction.
-- Featured products loaded from Supabase.
-- Navigation to the product catalog.
+Product records are loaded from Supabase; there is no hardcoded product fallback. If the request fails, the page displays an error state and retry action.
 
-### Products
+## Local preview
 
-- Product catalog loaded from `public.products`.
-- Search by product title, brand, category, or SKU.
-- Product cards show price, availability, stock, and image.
-- Product detail dialog shows available product information.
-
-The UI does not use hardcoded product records or a local product fallback. If Supabase cannot be reached or RLS denies the request, the app displays an error state and a retry action.
-
-## Run locally
-
-Because this is a no-build browser app, serve the repository root with any static HTTP server. For example:
+Serve the repository root with any static HTTP server:
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Open `http://localhost:8000`. Opening the file directly with a `file://` URL is not recommended because browser ES modules may be restricted.
 
-Opening `index.html` directly with a `file://` URL is not recommended because browser module and import-map behavior may differ.
+## GitHub Pages
 
-## GitHub Pages deployment
-
-1. Open the repository's **Settings → Pages**.
-2. Select **Deploy from a branch** if that is the intended Pages source.
-3. Choose the production branch and the repository root folder.
-4. Save and wait for the Pages deployment to finish.
-5. Open the published URL and verify the browser console and product catalog.
-
-This change is proposed on a feature branch. Merge the pull request before expecting the production branch's GitHub Pages site to receive these changes.
+Configure **Settings → Pages** to publish the repository root from the production branch. No GitHub Actions workflow or build command is required when using the branch-based Pages source.
 
 ## Verification checklist
 
-- [ ] Confirm the GitHub Pages source branch and deployment status.
-- [ ] Open the published site over HTTPS.
-- [ ] Confirm React and Babel load without browser console errors.
-- [ ] Confirm the Supabase project URL and public key are configured.
-- [ ] Confirm the Products page returns rows from `public.products`.
-- [ ] Test product search, detail dialog, retry state, and mobile layout.
-- [ ] Confirm no privileged Supabase key is present in the frontend.
+- [ ] GitHub Pages serves `index.html` from the repository root.
+- [ ] Browser console has no JavaScript or module-loading errors.
+- [ ] Supabase query returns rows from `public.products`.
+- [ ] Product search and detail dialog work.
+- [ ] Error and retry states work when the API is unavailable.
+- [ ] Mobile layout is usable.
+- [ ] No privileged Supabase credential is present in frontend files.
