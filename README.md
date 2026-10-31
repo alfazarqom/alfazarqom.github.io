@@ -57,7 +57,7 @@ Additional fields returned by the function may be available in the response but 
 
 - **Home:** brand introduction and four featured products.
 - **Products:** product catalog with search by title, brand, category, or SKU.
-- **Product details:** dialog with available product information.
+- **Product details:** dialog with available product information and a direct checkout link.\n- **Checkout / payment:** `mayar.html` loads the same product catalog, collects customer and shipping details, and calls the `mayar-create-invoice` Supabase Edge Function. The server validates product IDs, stock, price, shipping, and creates the Mayar invoice. The browser redirects to the returned HTTPS payment URL. An idempotency key is reused for identical checkout retries in the current tab.
 - **Responsive layout:** desktop and mobile breakpoints in `style.css`.
 - **Loading and errors:** loading state, error message, and retry action.
 
@@ -80,7 +80,7 @@ Configure **Settings → Pages** to publish the repository root from the product
 - [ ] GitHub Pages serves `index.html` from the repository root.
 - [ ] Browser console has no JavaScript errors.
 - [ ] Browser request to `get-products` returns HTTP success and valid JSON.
-- [ ] Product search and detail dialog work.
+- [ ] Product search and detail dialog work.\n- [ ] Mayar checkout loads products and creates an invoice through the Supabase Edge Function in sandbox.
 - [ ] Error and retry states work when the API is unavailable.
 - [ ] Mobile layout is usable.
 - [ ] No Supabase privileged credential or anon key is embedded in frontend files.
