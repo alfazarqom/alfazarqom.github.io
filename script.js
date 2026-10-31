@@ -104,7 +104,7 @@ function openProduct(product) {
       <h2 id="detail-title">${escapeHTML(product.title || "Produk")}</h2>
       <p class="detail-price">${formatPrice(displayPrice(product), product.currency)}</p>${description}
       <dl class="detail-facts">${facts.map(([label, value]) => `<div><dt>${escapeHTML(label)}</dt><dd>${escapeHTML(value)}</dd></div>`).join("")}</dl>
-      <p class="detail-note">Informasi produk ditampilkan langsung dari katalog Supabase.</p>
+      <p class="detail-note">Informasi produk ditampilkan langsung dari katalog Supabase.</p>\n      <a class="button button-dark" href="./mayar.html?product=${encodeURIComponent(product.id)}">Beli sekarang <span aria-hidden="true">↗</span></a>
     </div></section>`;
   $("#product-dialog").showModal();
 }
