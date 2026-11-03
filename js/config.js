@@ -1,0 +1,1 @@
+window.ASRI_CONFIG=Object.freeze({appName:"Asri Collection",productsEndpoint:"https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products",storageKeys:{cart:"asri:v1:cart",wishlist:"asri:v1:wishlist"}});

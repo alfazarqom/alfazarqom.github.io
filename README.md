@@ -1,86 +1,106 @@
-# Asri Collection — Static HTML
+# Asri Collection — React + Babel Standalone
 
-A mobile-responsive storefront built with native HTML, CSS, and JavaScript. It is hosted directly by GitHub Pages and does not use React, TypeScript, Babel, Vite, Node.js, or a build step.
+A no-build React storefront hosted as static files on GitHub Pages. JSX is compiled in the browser by Babel Standalone; this application does not require Vite, Webpack, Node.js build tooling, or a package manager at runtime.
+
+## Runtime
+
+- React and ReactDOM 18.3.1 using pinned UMD CDN assets.
+- Babel Standalone 7.26.10 using a pinned CDN asset.
+- JavaScript + JSX loaded as separate source files.
+- CSS split into tokens, global, layout, components, and responsive layers.
+- Custom hash routing with browser Back/Forward handling.
+- Existing Supabase Edge Function for public product catalog reads.
+- Cart and wishlist persisted in browser localStorage.
+
+An internet connection is required for the CDN libraries, fonts, catalog endpoint, and remote product images.
 
 ## Repository structure
 
-```text
-.
-├── index.html   # Static page markup and semantic layout
-├── style.css    # Responsive storefront styles
-├── script.js    # Browser interactions and get-products Edge Function request
-└── README.md    # Project documentation
-```
+    .
+    ├── index.html
+    ├── css/
+    │   ├── tokens.css
+    │   ├── global.css
+    │   ├── layout.css
+    │   ├── components.css
+    │   └── responsive.css
+    ├── js/
+    │   ├── config.js
+    │   ├── loader.js
+    │   ├── core.jsx
+    │   ├── components.jsx
+    │   ├── pages.jsx
+    │   └── app.jsx
+    ├── assets/
+    │   ├── fonts/
+    │   ├── icons/
+    │   └── images/
+    ├── docs/
+    │   ├── DESIGN_SYSTEM.md
+    │   └── DUITKU-POP-DOCUMENTATION-ROLE.md
+    ├── blueprint-design-system.json
+    ├── structure.json
+    └── README.md
 
-## Technology
+The JSX loader fetches and compiles source files sequentially before mounting React. This avoids relying on browser-native JSX support or an npm build pipeline.
 
-- Native HTML5 for page structure.
-- Plain CSS for layout and responsive styling.
-- Browser-native JavaScript ES modules for interactions.
-- Supabase Edge Function for public product catalog reads.
+## Routing and layout rules
 
-There is no compilation or bundling step. The browser needs an internet connection to request the product catalog and load remote product images and fonts.
+Example hash routes: #/, #/shop, #/search, #/categories/:slug, #/products/:id, #/cart, #/wishlist, and #/checkout.
 
-## Product data source
+AppShell is for browsing, discovery, navigation, and informational pages. StandaloneLayout is for functional, transactional, or form-submit flows. Ordinary navigation CTAs remain in AppShell. BottomActionBar, when present, remains in normal document flow; it is not fixed, absolute, or sticky by default.
 
-The storefront requests the Supabase Edge Function:
+## Product data
 
-```text
-GET https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products
-```
+The frontend reads the existing endpoint:
 
-The frontend expects a JSON response with this shape:
+    GET https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products
 
-```json
-{
-  "success": true,
-  "data": [],
-  "total": 147
-}
-```
+Expected response envelope:
 
-The `data` array contains product records from `public.products`. The storefront does not query the table directly, initialize the Supabase JavaScript client, or include a Supabase anon key in browser code. No customer login is required for this public catalog request; the Edge Function's deployed access configuration controls endpoint access.
+    { "success": true, "data": [], "total": 147 }
 
-The storefront validates the HTTP response and the `success` and `data` fields before rendering. It does not substitute hardcoded/demo products if the request fails.
+The frontend validates HTTP status, the success flag, the data array, and product identifiers. It does not query the database directly, include a privileged key, or substitute hardcoded/demo products. The endpoint and database were not changed by this frontend migration. Availability is shown separately from numeric stock quantity; products are not automatically hidden based on stock.
 
-## Product fields used by the storefront
+## Implemented frontend behavior
 
-- `id`: identifies a product for the detail dialog.
-- `title`, `brand`, `category`, `sku`: product identity and search.
-- `price`, `sale_price`, `currency`: displayed price.
-- `availability`, `stock_quantity`: availability and stock display.
-- `image_url`, `labels`, `description`: product presentation.
+- Home and featured products.
+- Product catalog with search and basic price sorting.
+- Product detail as a dedicated StandalonePage route.
+- Add to cart, quantity changes, removal, and local persistence.
+- Wishlist add/remove and local persistence.
+- Checkout preview form (no order submission).
+- AppShell and StandaloneLayout separation.
+- BottomActionBar component in normal document flow.
+- Toast feedback, loading, error, retry, and empty states.
+- Responsive product grid and mobile navigation.
 
-Additional fields returned by the function may be available in the response but are not currently rendered by this storefront.
+## Deliberately not activated
 
-## Pages and behavior
+Order creation, shipping calculation, payment processing, payment callbacks, order tracking, customer authentication, contact delivery, and refund/cancellation operations are not connected. These require separately verified backend/provider contracts and separate approval. Checkout currently displays a frontend preview and cannot create a real order or payment.
 
-- **Home:** brand introduction and four featured products.
-- **Products:** product catalog with search by title, brand, category, or SKU.
-- **Product details:** dialog with available product information.
-- **Responsive layout:** desktop and mobile breakpoints in `style.css`.
-- **Loading and errors:** loading state, error message, and retry action.
+Several page routes are architectural placeholders until their data sources and business requirements are approved. Their presence must not be interpreted as completed business integrations.
 
 ## Local preview
 
-Serve the repository root with any static HTTP server:
+Serve the repository root with any static HTTP server, for example:
 
-```bash
-python -m http.server 8000
-```
+    python -m http.server 8000
 
-Open `http://localhost:8000`. Opening the file directly with a `file://` URL is not recommended because browser ES modules may be restricted.
+Open http://localhost:8000. Opening index.html with a file URL is not recommended because the JSX loader fetches source files.
 
 ## GitHub Pages
 
-Configure **Settings → Pages** to publish the repository root from the production branch. No GitHub Actions workflow or build command is required when using the branch-based Pages source.
+Publish the repository root from the intended branch using GitHub Pages settings. No build command is required. This implementation does not change Pages settings or deploy the site.
 
 ## Verification checklist
 
-- [ ] GitHub Pages serves `index.html` from the repository root.
-- [ ] Browser console has no JavaScript errors.
-- [ ] Browser request to `get-products` returns HTTP success and valid JSON.
-- [ ] Product search and detail dialog work.
-- [ ] Error and retry states work when the API is unavailable.
-- [ ] Mobile layout is usable.
-- [ ] No Supabase privileged credential or anon key is embedded in frontend files.
+- [ ] React, ReactDOM, and Babel CDN assets load.
+- [ ] Sequential JSX loading succeeds.
+- [ ] No JavaScript runtime errors.
+- [ ] GitHub Pages serves JSX files as fetchable text.
+- [ ] Supabase get-products returns the expected response.
+- [ ] Product search, sorting, detail route, cart, and wishlist work.
+- [ ] Back and Forward update the active route.
+- [ ] Responsive and keyboard behavior are checked on target browsers.
+- [ ] Checkout remains preview-only until backend integration is approved.
