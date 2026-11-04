@@ -1,71 +1,85 @@
 # Asri Collection — React CDN (No Build)
 
-A mobile-responsive React storefront served directly by GitHub Pages. React and ReactDOM are loaded from CDN; Babel Standalone transforms JSX in the browser. There is no Node.js, NPM, Vite, bundler, or build step.
+Asri Collection is a responsive storefront hosted as a static website on GitHub Pages. The application uses React loaded from a CDN, with Babel Standalone compiling JSX in the browser. It intentionally has no Node.js, npm, Vite, bundler, or build step.
 
 ## Repository structure
 
 ```text
 .
-├── index.html   # HTML shell and CDN runtime
-├── App.jsx      # Single-file React application
-├── style.css    # Existing responsive storefront styles
-└── README.md    # Project documentation
+├── index.html
+├── App.jsx
+├── style.css
+├── structure.json
+├── blueprint-design-system.json
+├── README.md
+└── docs/
+    └── DESIGN_SYSTEM.md
 ```
 
 ## Technology
 
-- React 18.3.1 UMD production runtime.
-- ReactDOM 18.3.1 UMD production runtime.
+- React 18.3.1 UMD production runtime, loaded from CDN.
+- ReactDOM 18.3.1 UMD production runtime, loaded from CDN.
 - Babel Standalone 7.26.10 for browser-side JSX transformation.
-- Native CSS for layout and responsive styling.
-- React Hooks for application state, filtering, loading, and product details.
-- Supabase Edge Function for public product catalog reads.
+- Native CSS in `style.css`.
+- React Hooks for application state, product filtering, loading, and product details.
+- Browser `fetch()` for reading the public product catalog from a Supabase Edge Function.
 - GitHub Pages for static hosting.
 
-The browser must be online to load the CDN libraries, web fonts, product images, and product catalog. Since Babel compiles JSX in the browser, this no-build setup prioritizes simple deployment over production build-time optimization.
+The browser must be online to load the CDN libraries, web fonts, product images, and product catalog. Babel compiles JSX in the browser, so this no-build setup favors a simple static deployment over build-time optimization.
 
 ## Product data source
 
-The storefront requests:
+The current frontend requests the following endpoint from `App.jsx`:
 
 ```text
 GET https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products
 ```
 
-The frontend expects a JSON response with `success: true` and a `data` array. It optionally displays `total` when supplied. Product fields used include `id`, `title`, `brand`, `category`, `sku`, `price`, `sale_price`, `currency`, `availability`, `stock_quantity`, `image_url`, `labels`, and `description`.
+The frontend expects a JSON response containing `success: true` and a `data` array. It uses product fields including `id`, `title`, `brand`, `category`, `sku`, `price`, `sale_price`, `currency`, `availability`, `stock_quantity`, `image_url`, `labels`, and `description`. The optional `total` field is displayed when supplied.
 
-The storefront does not query the database directly, initialize the Supabase JavaScript client, or include a Supabase anon key. It does not substitute demo products when the request fails. The Edge Function's deployed access configuration controls endpoint access.
+The storefront reads through the Edge Function; it does not query the database directly, initialize the Supabase JavaScript client, or embed a Supabase anon key. It does not substitute demo products when a request fails. The endpoint and its deployed access configuration must be verified independently when the Supabase project or environment changes.
 
 ## Pages and behavior
 
-- **Home:** brand introduction and four featured products.
-- **Products:** catalog with search by title, brand, category, or SKU.
-- **Product details:** native dialog rendered and controlled by React.
+- **Home:** brand introduction and featured products.
+- **Products:** product catalog with search by title, brand, category, or SKU.
+- **Product details:** native HTML `<dialog>` controlled by React.
 - **Navigation:** home/products state synchronized with the URL hash.
-- **Responsive layout:** desktop and mobile breakpoints in `style.css`.
-- **Loading and errors:** loading state, error message, and retry action.
+- **Responsive layout:** desktop and mobile rules in `style.css`.
+- **Feedback:** loading, error, empty, and retry states.
 
 ## Local preview
 
-Serve the repository root using any static HTTP server:
+Run a static HTTP server from the repository root:
 
 ```bash
 python -m http.server 8000
 ```
 
-Open `http://localhost:8000`. Do not open the file directly with a `file://` URL; use HTTP so the browser can load the JSX source and CDN dependencies.
+Then open [http://localhost:8000](http://localhost:8000). Do not open `index.html` through a `file://` URL; serve it over HTTP so the browser can load the JSX source and CDN dependencies correctly.
 
 ## GitHub Pages
 
-Publish the repository root from the selected branch using **Settings → Pages**. No GitHub Actions workflow or build command is needed for branch-based Pages publishing. This migration branch is not configured or deployed by this change.
+The site is designed to be published as static files from the repository root. For branch-based publishing, select `main` and the root folder (`/`) in **Settings → Pages**. This documentation update does not change GitHub Pages settings, workflows, or deployment state.
+
+No GitHub Actions workflow, package installation, or build command is required for branch-based publishing.
+
+## Project documentation
+
+- `structure.json`: application architecture and component composition.
+- `blueprint-design-system.json`: structured design-system specification and visual tokens.
+- `docs/DESIGN_SYSTEM.md`: human-readable design-system rules and current implementation references.
+
+When implementation and documentation differ, verify the source files and update the relevant documentation rather than assuming the documentation is current.
 
 ## Verification checklist
 
-- [ ] CDN React, ReactDOM, and Babel scripts load successfully in a browser.
-- [ ] JSX compiles and the React application mounts.
+- [ ] React, ReactDOM, and Babel CDN scripts load successfully in a browser.
+- [ ] Babel compiles `App.jsx` and React mounts into `#root`.
 - [ ] Browser console has no runtime errors.
 - [ ] `get-products` returns HTTP success and the expected JSON contract.
-- [ ] Product search and product detail dialog work.
+- [ ] Product search and the native product detail dialog work.
 - [ ] Loading, error, empty, and retry states work.
 - [ ] URL hash navigation works.
 - [ ] Mobile and desktop layouts remain usable.

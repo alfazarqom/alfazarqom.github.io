@@ -3,11 +3,11 @@
   "meta": {
     "name": "Asri Collection App Structure",
     "artifact": "structure.json",
-    "version": "1.0.0",
-    "status": "baseline",
+    "version": "1.1.0",
+    "status": "current",
     "purpose": "Application architecture and UI composition blueprint",
     "source_of_truth": true,
-    "last_updated": "2026-10-30"
+    "last_updated": "2026-11-05"
   },
   "project": {
     "name": "Asri Collection",
@@ -19,15 +19,23 @@
   },
   "architecture": {
     "pattern": "single-page static application",
-    "runtime": "browser-native HTML, CSS, and JavaScript ES modules",
-    "framework": null,
-    "language": ["HTML5", "CSS", "JavaScript"],
+    "runtime": "React 18 UMD and ReactDOM 18 UMD loaded from CDN; Babel Standalone compiles JSX in the browser; native CSS",
+    "framework": "React 18 (CDN UMD)",
+    "language": [
+      "HTML5",
+      "JSX",
+      "JavaScript",
+      "CSS"
+    ],
     "build_required": false,
     "routing": {
-      "type": "in-page state navigation",
+      "type": "in-page React state navigation synchronized with URL hash",
       "library": null,
-      "mechanism": "data-page controls and page visibility",
-      "implemented_pages": ["home", "products"]
+      "mechanism": "React state and window.location.hash",
+      "implemented_pages": [
+        "home",
+        "products"
+      ]
     },
     "principles": [
       "Keep the current no-build GitHub Pages architecture.",
@@ -51,7 +59,11 @@
               {
                 "component": "Header",
                 "element": ".site-header",
-                "children": ["BrandLockup", "MainNavigation", "HeaderCTA"]
+                "children": [
+                  "BrandLockup",
+                  "MainNavigation",
+                  "HeaderCTA"
+                ]
               },
               {
                 "component": "Main",
@@ -67,12 +79,20 @@
                           {
                             "page": "Home",
                             "element": "#home-page",
-                            "children": ["HeroSection", "IntroStrip", "FeaturedProductsSection"]
+                            "children": [
+                              "HeroSection",
+                              "IntroStrip",
+                              "FeaturedProductsSection"
+                            ]
                           },
                           {
                             "page": "Products",
                             "element": "#products-page",
-                            "children": ["CatalogHeading", "CatalogToolbar", "ProductGrid"]
+                            "children": [
+                              "CatalogHeading",
+                              "CatalogToolbar",
+                              "ProductGrid"
+                            ]
                           }
                         ]
                       }
@@ -87,9 +107,9 @@
             ]
           },
           {
-            "component": "ProductDetailDialog",
-            "element": "#product-dialog",
-            "rendering": "native HTML dialog; outside the app-shell flow"
+            "component": "ProductDialog",
+            "element": ".product-dialog",
+            "rendering": "React-controlled native HTML dialog"
           }
         ]
       }
@@ -100,7 +120,11 @@
       "implemented": true,
       "element": ".app-shell",
       "direction": "column",
-      "regions": ["Header", "Main", "Footer"]
+      "regions": [
+        "Header",
+        "Main",
+        "Footer"
+      ]
     },
     "Main": {
       "implemented": true,
@@ -121,20 +145,30 @@
     "Home": {
       "implemented": true,
       "element": "#home-page",
-      "sections": ["HeroSection", "IntroStrip", "FeaturedProductsSection"]
+      "sections": [
+        "HeroSection",
+        "IntroStrip",
+        "FeaturedProductsSection"
+      ]
     },
     "Products": {
       "implemented": true,
       "element": "#products-page",
-      "sections": ["CatalogHeading", "CatalogToolbar", "ProductGrid"],
-      "features": ["ProductSearch", "ProductCount"]
+      "sections": [
+        "CatalogHeading",
+        "CatalogToolbar",
+        "ProductGrid"
+      ],
+      "features": [
+        "ProductSearch",
+        "ProductCount"
+      ]
     },
     "ProductDetail": {
       "implemented": true,
       "presentation": "ProductDetailDialog",
-      "element": "#product-dialog",
-      "content_element": "#product-detail-content",
-      "note": "A dialog, not a standalone route or page."
+      "element": ".product-dialog",
+      "note": "A native HTML dialog controlled by React, not a standalone route or page."
     },
     "Orders": {
       "implemented": false,
@@ -146,30 +180,84 @@
     }
   },
   "components": {
-    "Header": { "implemented": true, "source": "index.html" },
-    "BrandLockup": { "implemented": true, "source": "index.html" },
-    "MainNavigation": { "implemented": true, "source": "index.html", "behavior_source": "script.js" },
-    "HeaderCTA": { "implemented": true, "source": "index.html" },
-    "HeroSection": { "implemented": true, "source": "index.html" },
-    "IntroStrip": { "implemented": true, "source": "index.html" },
-    "FeaturedProductsSection": { "implemented": true, "source": "index.html" },
-    "CatalogToolbar": { "implemented": true, "source": "index.html" },
-    "ProductSearch": { "implemented": true, "source": "index.html", "behavior_source": "script.js" },
-    "ProductGrid": { "implemented": true, "source": "script.js", "style_source": "style.css" },
-    "ProductCard": { "implemented": true, "source": "script.js", "style_source": "style.css" },
-    "ProductDetailDialog": { "implemented": true, "source": "index.html", "behavior_source": "script.js" },
-    "LoadingState": { "implemented": true, "source": "index.html and script.js" },
-    "ErrorState": { "implemented": true, "source": "script.js" },
-    "EmptyState": { "implemented": true, "source": "script.js" },
-    "Footer": { "implemented": true, "source": "index.html" }
+    "Header": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "BrandLockup": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "MainNavigation": {
+      "implemented": true,
+      "source": "App.jsx",
+      "behavior_source": "App.jsx"
+    },
+    "HeaderCTA": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "HeroSection": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "IntroStrip": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "FeaturedProductsSection": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "CatalogToolbar": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "ProductSearch": {
+      "implemented": true,
+      "source": "App.jsx",
+      "behavior_source": "App.jsx"
+    },
+    "ProductGrid": {
+      "implemented": true,
+      "source": "App.jsx",
+      "style_source": "style.css"
+    },
+    "ProductCard": {
+      "implemented": true,
+      "source": "App.jsx",
+      "style_source": "style.css"
+    },
+    "ProductDialog": {
+      "implemented": true,
+      "source": "App.jsx",
+      "rendering": "native HTML dialog"
+    },
+    "LoadingState": {
+      "implemented": true,
+      "source": "App.jsx",
+      "initial_fallback_source": "index.html"
+    },
+    "ErrorState": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "EmptyState": {
+      "implemented": true,
+      "source": "App.jsx"
+    },
+    "Footer": {
+      "implemented": true,
+      "source": "App.jsx"
+    }
   },
   "data": {
     "provider": "Supabase Edge Function",
     "source_of_truth": "public.products",
     "endpoint": "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products",
     "method": "GET",
-    "client": "browser fetch",
-    "service_source": "script.js",
+    "client": "browser fetch()",
+    "service_source": "App.jsx",
     "expected_response": {
       "success": "boolean",
       "data": "array",
@@ -196,18 +284,21 @@
     "rule": "The design system blueprint is the source of truth for visual tokens; avoid duplicating token definitions in this file."
   },
   "repository_files": {
-    "index.html": "HTML document, semantic application shell, page sections, and product dialog",
+    "index.html": "HTML document, root mount point, React and Babel CDN runtime, and App.jsx entry",
+    "App.jsx": "React application, components, navigation, product fetching, search, and product dialog",
     "style.css": "Global styles, layout, components, and responsive rules",
-    "script.js": "Navigation behavior, product fetching, rendering, search, and product dialog interactions",
-    "blueprint-design-system.json": "Structured design-system source of truth",
+    "README.md": "Project overview, technology, data source, local preview, and GitHub Pages instructions",
+    "blueprint-design-system.json": "Structured design-system specification and visual token source",
     "docs/DESIGN_SYSTEM.md": "Human-readable design-system documentation",
     "structure.json": "Application structure and architecture blueprint"
   },
   "constraints": [
-    "Do not describe this repository as a React or Vite application; the current implementation is static HTML, CSS, and JavaScript.",
-    "Do not claim React Router, React components, TypeScript, npm, or a build pipeline are implemented.",
+    "Describe the current implementation as a React CDN application with native CSS and no build step.",
+    "Do not claim Vite, TypeScript, npm scripts, React Router, or a build pipeline are implemented.",
+    "React and ReactDOM are loaded from CDN; Babel Standalone compiles JSX in the browser.",
+    "Keep the product detail experience as a native HTML dialog unless a separate route is explicitly approved.",
+    "Do not add demo product fallback data when the Supabase Edge Function request fails.",
     "Do not add BottomNavigation, Orders, or Livechat to the implemented tree unless the application scope is explicitly revised.",
-    "Keep the product detail experience as a dialog unless a separate route is explicitly approved.",
     "Architecture changes must be reflected in this file when the implementation changes."
   ]
 }

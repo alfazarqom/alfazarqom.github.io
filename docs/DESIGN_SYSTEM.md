@@ -18,20 +18,26 @@ The design system is the reference for future UI work. Existing implementation d
 ```text
 .
 ├── index.html
+├── App.jsx
 ├── style.css
-├── script.js
-└── README.md
+├── structure.json
+├── blueprint-design-system.json
+├── README.md
+└── docs/
+    └── DESIGN_SYSTEM.md
 ```
 
 ### Verified frontend stack
 
-- Native HTML5
-- Plain CSS
-- Browser-native JavaScript ES modules
-- GitHub Pages static hosting
-- Supabase Edge Function for public product catalog reads
+- HTML5 document shell in `index.html`.
+- React 18.3.1 and ReactDOM 18.3.1 UMD production runtimes loaded from CDN.
+- Babel Standalone 7.26.10 compiles JSX in the browser.
+- React application and UI components in `App.jsx`.
+- Native CSS in `style.css`.
+- GitHub Pages static hosting.
+- Supabase Edge Function for public product catalog reads.
 
-This repository currently uses a static frontend. React, TypeScript, Vite, and a component build pipeline are not part of the verified implementation baseline.
+This is a React CDN application with no Node.js, npm, Vite, bundler, or build step. `index.html` provides the root mount point and browser runtime; `App.jsx` owns application rendering and behavior.
 
 ## 3. Design principles
 
@@ -119,15 +125,15 @@ Future work should consolidate repeated spacing values into documented CSS custo
 
 ### 5.2 Responsive breakpoint
 
-The current stylesheet contains a verified breakpoint at:
+The current stylesheet contains these responsive breakpoints:
 
 | Breakpoint | Behavior |
 |---|---|
-| `max-width: 760px` | Mobile layout adjustments |
+| `max-width: 760px` | Main mobile layout adjustments |
+| `max-width: 600px` | Product dialog and compact layout adjustments |
+| `max-width: 380px` | Small-screen refinements |
 
-At this breakpoint, the header, hero, content padding, product grid, and catalog toolbar change layout.
-
-Do not assume additional tablet or desktop breakpoint values unless they are found in the source stylesheet.
+These values are implementation references from `style.css`; update this table when the source breakpoints change.
 
 ### 5.3 Product grid
 
@@ -178,7 +184,7 @@ Every new or substantially revised component should document:
 - Respect reduced-motion preferences when adding non-essential animation.
 - Verify text and control contrast before introducing new color combinations.
 
-The current stylesheet already defines visible focus outlines for several navigation and action controls. New interactive elements must follow the same principle.
+The current stylesheet defines visible focus outlines for several navigation and action controls. New interactive elements must follow the same principle.
 
 ## 8. CSS token direction
 
@@ -251,9 +257,11 @@ Documentation changes do not automatically authorize CSS, HTML, JavaScript, data
 
 ## 12. Source of truth
 
+- HTML document and CDN runtime: `index.html`
+- React application structure and browser behavior: `App.jsx`
 - Current visual implementation: `style.css`
-- Current page structure: `index.html`
-- Current browser behavior: `script.js`
-- Design-system documentation: `docs/DESIGN_SYSTEM.md`
+- Structured application architecture: `structure.json`
+- Structured design tokens and design specification: `blueprint-design-system.json`
+- Human-readable design-system documentation: `docs/DESIGN_SYSTEM.md`
 
-When documentation and implementation differ, report the discrepancy. Do not silently treat either one as updated.
+`index.html` mounts the React application into `#root`; the rendered storefront components and application behavior are implemented in `App.jsx`. When documentation and implementation differ, report the discrepancy. Do not silently treat either one as updated.
