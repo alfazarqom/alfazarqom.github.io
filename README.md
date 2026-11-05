@@ -8,6 +8,7 @@ Asri Collection is a mobile-only storefront hosted as a static website on GitHub
 .
 ├── index.html
 ├── App.jsx
+├── Pages.jsx
 ├── style.css
 ├── structure.json
 ├── blueprint-design-system.json
@@ -22,7 +23,8 @@ Asri Collection is a mobile-only storefront hosted as a static website on GitHub
 - ReactDOM 18.3.1 UMD production runtime, loaded from CDN.
 - Babel Standalone 7.26.10 for browser-side JSX transformation.
 - Native CSS in `style.css`.
-- React Hooks for application state, product filtering, loading, and product details.
+- React Hooks for application state, catalog loading, page routing, and product selection.
+- `Pages.jsx` contains the page-level React components, loaded by Babel Standalone before `App.jsx`.
 - Browser `fetch()` for reading the public product catalog from a Supabase Edge Function.
 - GitHub Pages for static hosting.
 
@@ -42,15 +44,23 @@ The storefront reads through the Edge Function; it does not query the database d
 
 ## Pages and behavior
 
-- **Home:** brand introduction and featured products.
-- **Products:** product catalog with search by title, brand, category, or SKU.
-- **Product details:** native HTML `<dialog>` controlled by React.
+- **Home:** brand introduction, featured catalog products, quick view, and wishlist actions.
+- **Products:** live catalog grid and navigation to product search and detail.
+- **ProductDetail:** catalog-backed product information, availability, wishlist, and add-to-cart.
 - **Navigation:** page state synchronized with the URL hash.
 - **BottomNavigation:** Home, Products, and Profile.
 - **BottomActionBar:** ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.
 - **Footer:** rendered inside each page.
 - **Mobile-only layout:** 320–767px; no tablet or desktop layout.
-- **Page status:** Home and Products retain their existing features. Profile and the other target routes currently render placeholders; their commerce functionality is not implemented.
+- **Search:** searches product title, brand, category, SKU, and description.
+- **Cart:** local persistent cart, quantity updates, removal, and subtotal.
+- **Checkout:** guest recipient form and local draft creation. It does not submit an order to a server.
+- **OrderSuccess:** confirms only that a local draft was saved; it does not indicate payment or order acceptance.
+- **OrderTracking:** searches local draft references stored in the current browser only.
+- **Wishlist:** local persistent saved products.
+- **Profile:** optional guest profile stored in the current browser.
+- **Contact:** validates and copies a message draft; no official contact recipient or automatic send is configured.
+- **Local storage:** cart, wishlist, guest profile, and local order drafts are persisted in the current browser.
 - **Feedback:** loading, error, empty, and retry states.
 
 ## Local preview
@@ -83,7 +93,12 @@ When implementation and documentation differ, verify the source files and update
 - [ ] Babel compiles `App.jsx` and React mounts into `#root`.
 - [ ] Browser console has no runtime errors.
 - [ ] `get-products` returns HTTP success and the expected JSON contract.
-- [ ] Product search and the native product detail dialog work.
+- [ ] Product search, product detail, quick view, and wishlist actions work.
+- [ ] Cart changes persist after refresh.
+- [ ] Guest profile and wishlist persist after refresh.
+- [ ] Checkout creates a clearly labelled local draft only.
+- [ ] Tracking finds drafts saved in the current browser.
+- [ ] Contact form copies a draft without claiming it was sent.
 - [ ] Loading, error, empty, and retry states work.
 - [ ] URL hash navigation works.
 - [ ] Mobile layout remains usable at 320px, 390px, and 767px.
@@ -92,3 +107,4 @@ When implementation and documentation differ, verify the source files and update
 - [ ] Footer is nested inside each page.
 - [ ] Viewports wider than 767px do not activate a desktop/tablet layout.
 - [ ] No privileged Supabase credential is embedded in frontend files.
+- [ ] No order, payment, stock reservation, or server-side tracking is claimed without a verified backend contract.
