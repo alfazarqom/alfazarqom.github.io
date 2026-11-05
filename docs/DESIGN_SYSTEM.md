@@ -97,9 +97,8 @@ The current stylesheet uses a mixture of fixed values and responsive `clamp()` e
 
 | Context | Current value |
 |---|---|
-| Desktop page side padding | `clamp(20px, 6vw, 84px)` |
 | Mobile page side padding | `18px` |
-| Product grid gap | `22px` desktop; `14px` mobile column gap |
+| Product grid gap | `14px` mobile column gap |
 | Main section top padding | `64px` |
 | Mobile section top padding | `46px` |
 
@@ -119,26 +118,19 @@ Future work should consolidate repeated spacing values into documented CSS custo
 
 - `#root` fills the viewport and uses a vertical flex layout.
 - `.app-shell` is a full-height vertical application shell.
-- `.site-header` and `.site-footer` remain outside the scrolling content region.
+- `.site-header` remains outside the scrolling content region.
+- Each page renders its own `.page-footer` inside `.main-content`.
 - `.main-content` owns vertical scrolling.
-- `.main-content-inner` is centered and capped at `1440px`.
+- `.main-content-inner` is centered and capped at `767px`.
 
 ### 5.2 Responsive breakpoint
 
-The current stylesheet contains these responsive breakpoints:
-
-| Breakpoint | Behavior |
-|---|---|
-| `max-width: 760px` | Main mobile layout adjustments |
-| `max-width: 600px` | Product dialog and compact layout adjustments |
-| `max-width: 380px` | Small-screen refinements |
-
-These values are implementation references from `style.css`; update this table when the source breakpoints change.
+The application is mobile-only and supports viewport widths from `320px` through `767px`. It does not provide tablet or desktop layouts. Within that mobile range, the stylesheet uses `max-width: 760px`, `max-width: 600px`, `max-width: 380px`, and a `560px–767px` refinement for wider mobile screens.
 
 ### 5.3 Product grid
 
-- Desktop baseline: four columns.
-- Mobile breakpoint baseline: two columns.
+- Two columns throughout the supported mobile viewport range.
+- Do not add tablet or desktop grid variants.
 - Product media uses an aspect ratio of `4 / 4.7`.
 - Product cards use consistent metadata spacing and a two-line title clamp.
 
