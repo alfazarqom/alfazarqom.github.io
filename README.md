@@ -8,7 +8,7 @@ Asri Collection is a mobile-only storefront hosted as a static website on GitHub
 .
 ├── index.html
 ├── App.jsx
-├── Pages.jsx
+├── Pages.js
 ├── style.css
 ├── structure.json
 ├── blueprint-design-system.json
@@ -24,7 +24,7 @@ Asri Collection is a mobile-only storefront hosted as a static website on GitHub
 - Babel Standalone 7.26.10 for browser-side JSX transformation.
 - Native CSS in `style.css`.
 - React Hooks for application state, catalog loading, page routing, and product selection.
-- `Pages.jsx` contains the page-level React components, loaded by Babel Standalone before `App.jsx`.
+- `Pages.js` contains the page-level React components using `React.createElement`; it loads synchronously before the Babel-compiled `App.jsx`.
 - Browser `fetch()` for reading the public product catalog from a Supabase Edge Function.
 - GitHub Pages for static hosting.
 
