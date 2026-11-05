@@ -123,24 +123,26 @@ Future work should consolidate repeated spacing values into documented CSS custo
 - `.main-content` owns vertical scrolling.
 - `.main-content-inner` is centered and capped at `1440px`.
 
-### 5.2 Responsive breakpoint
+### 5.2 Responsive breakpoint — Responsive Layout V1
 
-The current stylesheet contains these responsive breakpoints:
+The approved responsive scope is Header, HomePage, and ProductsPage.
 
-| Breakpoint | Behavior |
-|---|---|
-| `max-width: 760px` | Main mobile layout adjustments |
-| `max-width: 600px` | Product dialog and compact layout adjustments |
-| `max-width: 380px` | Small-screen refinements |
+| Viewport | Width | Header height | Page gutter | Product grid | Hero |
+|---|---:|---:|---:|---:|---:|
+| Mobile | 320–767px | 64px | 20px (16px at ≤380px) | 2 columns | 1 column |
+| Tablet | 768–1023px | 72px | 32px | 3 columns | 2 columns |
+| Desktop | ≥1024px | 76px | clamp(32px, 6vw, 84px) | 4 columns | 2 columns |
 
-These values are implementation references from `style.css`; update this table when the source breakpoints change.
+BottomNavigation is visible only on Mobile. Header navigation and inline search are used on Tablet and Desktop. Other page content is not redesigned by this release.
 
 ### 5.3 Product grid
 
-- Desktop baseline: four columns.
-- Mobile breakpoint baseline: two columns.
+- Mobile: two columns.
+- Tablet: three columns.
+- Desktop: four columns.
 - Product media uses an aspect ratio of `4 / 4.7`.
 - Product cards use consistent metadata spacing and a two-line title clamp.
+- HomePage and ProductsPage use the same ProductGrid and ProductCard components.
 
 ## 6. Component standards
 
@@ -265,3 +267,31 @@ Documentation changes do not automatically authorize CSS, HTML, JavaScript, data
 - Human-readable design-system documentation: `docs/DESIGN_SYSTEM.md`
 
 `index.html` mounts the React application into `#root`; the rendered storefront components and application behavior are implemented in `App.jsx`. When documentation and implementation differ, report the discrepancy. Do not silently treat either one as updated.
+
+
+## 13. Responsive Layout V1 — approved implementation
+
+### Header & Navigation
+- Mobile: 64px header; BrandLockup left; Search, Wishlist, Cart actions right; no header MainNavigation or inline search; BottomNavigation visible.
+- Tablet: 72px header; BrandLockup and left-aligned MainNavigation; compact inline search; Wishlist and Cart right.
+- Desktop: 76px header; BrandLockup and left-aligned MainNavigation; inline search; Wishlist and Cart right.
+- Header inline search submits the query and opens ProductsPage.
+- Active Home/Products navigation uses the existing emerald accent.
+
+### HomePage
+- Mobile: single-column hero with content before visual; vertical IntroStrip; two-column featured grid.
+- Tablet: two-column hero; horizontal IntroStrip; three-column featured grid.
+- Desktop: two-column editorial hero; horizontal IntroStrip; four-column featured grid.
+
+### ProductsPage
+- Mobile: stacked catalog heading and full-width search; two-column grid.
+- Tablet: horizontal catalog toolbar; three-column grid.
+- Desktop: horizontal catalog toolbar; four-column grid.
+
+### Shared implementation constraints
+- Keep ProductCard shared by HomePage and ProductsPage.
+- Keep product navigation at `/products/{item_group_id}`.
+- Keep the existing Supabase Edge Function as the catalog source; no demo fallback.
+- Keep the existing React CDN, ReactDOM CDN, Babel Standalone, and GitHub Pages architecture.
+- Footer remains inside each page.
+- Tablet/Desktop redesign is limited to Header, HomePage, and ProductsPage; other page content is not redesigned.
