@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { SfButton } from "@storefront-ui/react";
 
 const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products";
@@ -70,7 +71,7 @@ function sanitizeRichText(html: string | undefined): string {
   return Array.from(parsed.body.childNodes).map(serialize).join("");
 }
 
-function PrimaryButton({ children, onClick, type = "button" }: { children: React.ReactNode; onClick?: () => void; type?: "button" | "submit" }) {
+function PrimaryButton({ children, onClick, type = "button" }: { children: ReactNode; onClick?: () => void; type?: "button" | "submit" }) {
   return <SfButton type={type} onClick={onClick} className="!min-h-11 !rounded-sm !bg-asri-green !px-5 !font-semibold !text-white hover:!bg-asri-dark">{children}</SfButton>;
 }
 
@@ -149,7 +150,7 @@ function ProductDetailPage({ products, itemGroupId, status, error, onRetry, onNa
         <p className="mt-4 text-xl font-bold">{formatPrice(displayPrice(selected))}</p>
         <p className={`mt-3 text-sm ${stock === "in stock" ? "text-asri-green" : "text-asri-muted"}`}>{stock === "in stock" ? "● Tersedia" : stock === "out of stock" ? "● Stok habis" : "● Status tidak diketahui"}</p>
         {variants.length > 1 && <div className="mt-7"><p className="mb-3 text-sm font-semibold">Pilih varian ({variants.length})</p><div className="flex flex-wrap gap-2">{variants.map(v => <button key={String(v.id)} type="button" aria-pressed={selected.id === v.id} onClick={() => setSelectedId(v.id)} className={`min-h-11 border px-4 text-sm ${selected.id === v.id ? "border-asri-green bg-asri-soft text-asri-green" : "border-asri-line bg-white"}`}>{v.color || v.title || v.id}</button>)}</div></div>}
-        {rich ? <div className="prose prose-sm mt-7 max-w-none prose-a:text-asri-green" dangerouslySetInnerHTML={{ __html: rich }} /> : selected.description && <p className="mt-7 text-sm leading-7 text-asri-muted">{selected.description}</p>}
+        {rich ? <div className="mt-7 space-y-3 text-sm leading-7" dangerouslySetInnerHTML={{ __html: rich }} /> : selected.description && <p className="mt-7 text-sm leading-7 text-asri-muted">{selected.description}</p>}
         <dl className="mt-7 divide-y divide-asri-line border-y border-asri-line text-sm">{[["Grup produk", selected.item_group_id], ["Kategori", selected.product_type], ["Warna", selected.color], ["Kondisi", selected.condition], ["Material", selected.material], ["Ukuran", selected.size]].filter(([, value]) => value).map(([label, value]) => <div key={label} className="grid grid-cols-2 gap-3 py-3"><dt className="text-asri-muted">{label}</dt><dd className="text-right font-medium">{String(value)}</dd></div>)}</dl>
         <p className="mt-5 text-xs text-asri-muted">Informasi produk dan varian ditampilkan dari katalog Supabase.</p>
       </div>
