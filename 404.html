@@ -2,30 +2,20 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#fbfbf8">
-  <meta name="description" content="Asri Collection — curated fashion and accessories.">
-  <title>Asri Collection</title>
-  <base href="/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
-
-  <!-- React runtime: browser-loaded, no npm or build step. -->
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
-  <!-- Babel transforms JSX in the browser. -->
-  <script src="https://unpkg.com/@babel/standalone@7.26.10/babel.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mengarahkan ke Asri Collection</title>
+  <script>
+    (function redirectGitHubPagesRoute() {
+      const requestedPath = window.location.pathname + window.location.search + window.location.hash;
+      const destination = "/?p=" + encodeURIComponent(requestedPath);
+      window.location.replace(destination);
+    })();
+  </script>
 </head>
 <body>
-  <div id="root">
-    <main class="loading-state" aria-live="polite">
-      <span class="spinner"></span>
-      Memuat Asri Collection...
-    </main>
-  </div>
-
-  <script type="text/babel" data-presets="env,react" src="./App.jsx"></script>
+  <p>Mengarahkan ke halaman yang diminta...</p>
+  <noscript>
+    JavaScript diperlukan untuk membuka halaman produk. <a href="/">Kembali ke beranda</a>.
+  </noscript>
 </body>
 </html>
