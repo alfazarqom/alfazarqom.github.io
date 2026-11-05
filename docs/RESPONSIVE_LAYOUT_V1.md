@@ -39,7 +39,7 @@ Content max width: 1440px. At widths ≤380px, page gutter reduces to 16px.
 - Catalog remains sourced from the existing Supabase Edge Function `get-divoom-products`.
 - No demo fallback data is introduced.
 - Existing loading, error, retry, and empty states are preserved.
-- React CDN, ReactDOM CDN, Babel Standalone, native CSS, and GitHub Pages remain unchanged.
+- React + Vite + TypeScript, Storefront UI React, Tailwind utilities, and GitHub Pages static hosting target are used. Publishing dist remains separate approval.
 - Footer remains nested inside each page.
 - Responsive redesign is limited to Header, HomePage, ProductsPage, shared product presentation, and related documentation. Other page content is not redesigned.
 
