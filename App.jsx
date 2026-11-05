@@ -253,7 +253,7 @@ function App() {
 
       {page === "orderSuccess" && <section className="catalog-section"><Pages.OrderSuccess order={activeOrder} onTrack={() => showPage("orderTracking", { order: activeOrderId })} onShop={() => showPage("products")} /><Pages.Footer /></section>}
 
-      {page === "orderTracking" && <section className="catalog-section"><Pages.Tracking orders={orders} activeOrder={activeOrder} trackingInput={trackingInput} setTrackingInput={setTrackingInput} onLookup={lookupOrder} /><Pages.Footer /></section>}
+      {page === "orderTracking" && <section className="catalog-section"><Pages.Tracking orders={orders} activeOrder={activeOrder} trackingInput={trackingInput} setTrackingInput={setTrackingInput} onLookup={lookupOrder} onSelectOrder={id => { setActiveOrderId(id); setTrackingInput(id); }} /><Pages.Footer /></section>}
 
       {page === "wishlist" && <section className="catalog-section"><Pages.Wishlist products={wishlistProducts} loading={catalogStatus === "loading"} error={catalogError} retry={loadProducts} wishlistIds={wishlistIds} onOpen={openProduct} onToggleWishlist={toggleWishlist} /><Pages.Footer /></section>}
 
