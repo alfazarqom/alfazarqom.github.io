@@ -3,7 +3,7 @@
   "meta": {
     "name": "Asri Collection App Structure",
     "artifact": "structure.json",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "status": "current",
     "purpose": "Application architecture and UI composition blueprint",
     "source_of_truth": true,
@@ -35,7 +35,6 @@
       "implemented_pages": [
         "home",
         "products",
-        "profile",
         "productDetail",
         "search",
         "cart",
@@ -43,9 +42,10 @@
         "orderSuccess",
         "orderTracking",
         "wishlist",
+        "profile",
         "contact"
       ],
-      "note": "Home and Products retain their existing storefront features. Profile and the remaining routes currently render explicit placeholders pending feature implementation."
+      "note": "All eleven target routes now render page-specific storefront UI. Cart, wishlist, guest profile, contact message drafts, and order drafts are browser-local. No order submission, payment, stock reservation, or server-side tracking is implemented."
     },
     "principles": [
       "Keep the current no-build GitHub Pages architecture.",
@@ -95,7 +95,8 @@
                             "children": [
                               "HeroSection",
                               "IntroStrip",
-                              "FeaturedProductsSection"
+                              "FeaturedProductsSection",
+                              "PageFooter"
                             ]
                           },
                           {
@@ -107,7 +108,43 @@
                               "ProductGrid"
                             ]
                           },
-                          "PageFooter"
+                          "PageFooter",
+                          {
+                            "page": "ProductDetail",
+                            "component": "Pages.Detail"
+                          },
+                          {
+                            "page": "Search",
+                            "component": "Pages.Search"
+                          },
+                          {
+                            "page": "Cart",
+                            "component": "Pages.Cart"
+                          },
+                          {
+                            "page": "Checkout",
+                            "component": "Pages.Checkout"
+                          },
+                          {
+                            "page": "OrderSuccess",
+                            "component": "Pages.OrderSuccess"
+                          },
+                          {
+                            "page": "OrderTracking",
+                            "component": "Pages.Tracking"
+                          },
+                          {
+                            "page": "Wishlist",
+                            "component": "Pages.Wishlist"
+                          },
+                          {
+                            "page": "Profile",
+                            "component": "Pages.Profile"
+                          },
+                          {
+                            "page": "Contact",
+                            "component": "Pages.Contact"
+                          }
                         ]
                       }
                     ]
@@ -166,7 +203,16 @@
         "Header",
         "Main",
         "active bottom navigation component"
-      ]
+      ],
+      "storage": {
+        "cart": "localStorage: asri-cart-v1",
+        "wishlist": "localStorage: asri-wishlist-v1",
+        "guestProfile": "localStorage: asri-customer-v1",
+        "orderDrafts": "localStorage: asri-local-orders-v1"
+      },
+      "checkout": "Creates a local-only draft. Does not submit an order, reserve stock, charge payment, or confirm fulfillment.",
+      "orderTracking": "Searches only local order drafts stored in the current browser.",
+      "contact": "Copies a message draft; no official recipient/channel is configured and no message is sent."
     }
   },
   "layouts": {
@@ -204,7 +250,15 @@
         "HeroSection",
         "IntroStrip",
         "FeaturedProductsSection"
-      ]
+      ],
+      "content_status": "implemented",
+      "features": [
+        "Brand hero",
+        "Featured catalog products",
+        "Quick view",
+        "Page footer"
+      ],
+      "navigation": "BottomNavigation"
     },
     "Products": {
       "implemented": true,
@@ -215,16 +269,28 @@
         "ProductGrid"
       ],
       "features": [
-        "ProductSearch",
-        "ProductCount"
-      ]
+        "Live catalog",
+        "Product grid",
+        "Quick view",
+        "Wishlist toggle",
+        "Page footer"
+      ],
+      "content_status": "implemented",
+      "navigation": "BottomNavigation"
     },
     "ProductDetail": {
       "implemented": true,
-      "content_status": "placeholder",
+      "content_status": "implemented",
       "navigation": "BottomActionBar",
       "presentation": "Placeholder page route; ProductDialog remains the existing quick-view overlay.",
-      "note": "Route placeholder. ProductQuickView remains a separate overlay for the existing product-card detail interaction."
+      "note": "Route placeholder. ProductQuickView remains a separate overlay for the existing product-card detail interaction.",
+      "features": [
+        "Catalog-backed product detail",
+        "Availability and stock information",
+        "Wishlist toggle",
+        "Add-to-cart action",
+        "Page footer"
+      ]
     },
     "Orders": {
       "implemented": false,
@@ -236,43 +302,101 @@
     },
     "Profile": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomNavigation"
+      "content_status": "implemented",
+      "navigation": "BottomNavigation",
+      "features": [
+        "Optional guest profile",
+        "Local profile persistence",
+        "Shortcuts to local drafts wishlist and cart",
+        "Page footer"
+      ]
     },
     "Search": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Search title",
+        "Brand",
+        "Category",
+        "SKU",
+        "Description",
+        "Empty and error states",
+        "Page footer"
+      ]
     },
     "Cart": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Persistent local cart",
+        "Quantity controls",
+        "Remove item",
+        "Subtotal",
+        "Checkout navigation",
+        "Page footer"
+      ]
     },
     "Checkout": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Guest recipient form",
+        "Client-side required-field validation",
+        "Order summary",
+        "Local draft creation only",
+        "Page footer"
+      ]
     },
     "OrderSuccess": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Local draft confirmation",
+        "Local reference",
+        "Subtotal",
+        "Tracking navigation",
+        "Explicit non-payment disclosure",
+        "Page footer"
+      ]
     },
     "OrderTracking": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Lookup local draft reference",
+        "List local drafts",
+        "Draft detail",
+        "Explicit local-only disclosure",
+        "Page footer"
+      ]
     },
     "Wishlist": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Persistent local wishlist",
+        "Product grid",
+        "Remove saved product",
+        "Page footer"
+      ]
     },
     "Contact": {
       "implemented": true,
-      "content_status": "placeholder",
-      "navigation": "BottomActionBar"
+      "content_status": "implemented",
+      "navigation": "BottomActionBar",
+      "features": [
+        "Contact message form",
+        "Client-side validation",
+        "Copy message draft",
+        "No fabricated recipient or auto-send claim",
+        "Page footer"
+      ]
     }
   },
   "components": {
@@ -312,26 +436,32 @@
     },
     "ProductGrid": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "Pages.jsx",
       "style_source": "style.css"
     },
     "ProductCard": {
       "implemented": true,
-      "source": "App.jsx",
-      "style_source": "style.css"
+      "source": "Pages.jsx",
+      "style_source": "style.css",
+      "features": [
+        "Open quick view",
+        "Wishlist toggle"
+      ]
     },
     "LoadingState": {
       "implemented": true,
       "source": "App.jsx",
-      "initial_fallback_source": "index.html"
+      "style_source": "style.css"
     },
     "ErrorState": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "App.jsx",
+      "style_source": "style.css"
     },
     "EmptyState": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "Pages.jsx",
+      "style_source": "style.css"
     },
     "Footer": {
       "implemented": true,
@@ -360,12 +490,13 @@
         "OrderTracking",
         "Wishlist",
         "Contact"
-      ]
+      ],
+      "behavior": "Contextual primary action when relevant; safe back-to-products fallback otherwise"
     },
     "PageFooter": {
       "implemented": true,
-      "source": "App.jsx",
-      "placement": "Inside each page"
+      "source": "Pages.jsx",
+      "placement": "Rendered inside each page component"
     },
     "ProductQuickView": {
       "implemented": true,
@@ -376,17 +507,38 @@
     "SearchButton": {
       "implemented": true,
       "source": "App.jsx",
-      "behavior": "Navigates to the Search placeholder route"
+      "behavior": "Navigates to functional Search page"
     },
     "WishlistButton": {
       "implemented": true,
       "source": "App.jsx",
-      "behavior": "Navigates to the Wishlist placeholder route"
+      "behavior": "Navigates to functional Wishlist page"
     },
     "CartButton": {
       "implemented": true,
       "source": "App.jsx",
-      "behavior": "Navigates to the Cart placeholder route"
+      "behavior": "Navigates to functional Cart page and shows local item count"
+    },
+    "Toast": {
+      "implemented": true,
+      "source": "App.jsx",
+      "element": ".toast-message",
+      "behavior": "Transient action feedback"
+    },
+    "PageComponents": {
+      "implemented": true,
+      "source": "Pages.jsx",
+      "components": [
+        "Detail",
+        "Search",
+        "Cart",
+        "Checkout",
+        "OrderSuccess",
+        "Tracking",
+        "Wishlist",
+        "Profile",
+        "Contact"
+      ]
     }
   },
   "data": {
@@ -433,7 +585,8 @@
     "README.md": "Project overview, technology, data source, local preview, and GitHub Pages instructions",
     "blueprint-design-system.json": "Structured design-system specification and visual token source",
     "docs/DESIGN_SYSTEM.md": "Human-readable design-system documentation",
-    "structure.json": "Application structure and architecture blueprint"
+    "structure.json": "Application structure and architecture blueprint",
+    "Pages.jsx": "Page-level React components loaded before App.jsx by Babel Standalone."
   },
   "constraints": [
     "Describe the current implementation as a React CDN application with native CSS and no build step.",
@@ -448,14 +601,14 @@
   ],
   "overlays": {
     "implemented": [
-      "ProductQuickView"
+      "ProductQuickView",
+      "Toast"
     ],
     "planned": [
       "CartDrawer",
       "SearchOverlay",
-      "ConfirmationDialog",
-      "Toast"
+      "ConfirmationDialog"
     ],
-    "placement": "Outside AppShell"
+    "placement": "ProductQuickView uses a native dialog; Toast is rendered in AppShell."
   }
 }
