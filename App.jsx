@@ -1,6 +1,6 @@
 const { useEffect, useMemo, useRef, useState } = React;
 
-const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products";
+const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products";
 
 function formatPrice(amount, currency = "IDR") {
   if (amount === null || amount === undefined || amount === "") return "Harga belum tersedia";
@@ -16,11 +16,43 @@ function formatPrice(amount, currency = "IDR") {
 }
 
 function displayPrice(product) {
-  return product.sale_price != null &&
-    product.price != null &&
-    Number(product.sale_price) < Number(product.price)
-    ? product.sale_price
-    : product.price;
+  const salePrice = Number(product.sale_price);
+  const price = Number(product.price);
+  return product.sale_price != null && Number.isFinite(salePrice) &&
+    Number.isFinite(price) && salePrice > 0 && salePrice < price
+    ? salePrice : product.price;
+}
+
+function productImages(product) {
+  const additional = Array.isArray(product.additional_image_link) ? product.additional_image_link : [];
+  return [...new Set([product.image_link, ...additional].filter(
+    (url) => typeof url === "string" && /^https?:\/\//i.test(url)
+  ))];
+}
+
+function sanitizeRichText(html) {
+  if (typeof html !== "string" || !html.trim()) return "";
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  const allowedTags = new Set(["P", "UL", "OL", "LI", "STRONG", "B", "EM", "I", "BR", "A", "H3", "H4"]);
+  const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[char]));
+  function serialize(node) {
+    if (node.nodeType === Node.TEXT_NODE) return escapeHtml(node.nodeValue || "");
+    if (node.nodeType !== Node.ELEMENT_NODE) return "";
+    const tag = node.tagName;
+    const children = Array.from(node.childNodes).map(serialize).join("");
+    if (!allowedTags.has(tag)) return children;
+    if (tag === "BR") return "<br>";
+    if (tag === "A") {
+      const href = node.getAttribute("href") || "";
+      return /^https:\/\//i.test(href)
+        ? '<a href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' + children + "</a>"
+        : children;
+    }
+    return "<" + tag.toLowerCase() + ">" + children + "</" + tag.toLowerCase() + ">";
+  }
+  return Array.from(parsed.body.childNodes).map(serialize).join("");
 }
 
 function LoadingState() {
@@ -46,7 +78,7 @@ function ErrorState({ message, onRetry }) {
 }
 
 function ProductCard({ product, onSelect }) {
-  const available = String(product.availability || "").toLowerCase() === "available";
+  const available = String(product.availability || "").toLowerCase() === "in stock";
 
   return (
     <button
@@ -56,34 +88,29 @@ function ProductCard({ product, onSelect }) {
       aria-label={`Lihat detail ${product.title || "produk"}`}
     >
       <span className="product-image-wrap">
-        {product.image_url ? (
+        {product.image_link ? (
           <img
             className="product-image"
-            src={product.image_url}
+            src={product.image_link}
             alt={product.title || "Produk Asri Collection"}
             loading="lazy"
           />
         ) : (
           <span className="image-placeholder" aria-hidden="true">ASRI</span>
         )}
-        {Array.isArray(product.labels) && product.labels.length > 0 && (
-          <span className="product-label">{product.labels[0]}</span>
-        )}
+        {product.color && <span className="product-label">{product.color}</span>}
       </span>
       <span className="product-meta">
         <span className="product-brand">
-          {product.brand || product.category || "ASRI COLLECTION"}
+          {product.brand || product.product_type || "DIVOOM"}
         </span>
         <strong className="product-title">{product.title || "Produk"}</strong>
         <span className="product-price">
-          {formatPrice(displayPrice(product), product.currency)}
+          {formatPrice(displayPrice(product), "IDR")}
         </span>
         <span className={`stock-status ${available ? "is-available" : ""}`}>
           <span className="status-dot" />
-          {available ? "Tersedia" : "Periksa ketersediaan"}
-          {product.stock_quantity != null && (
-            <span className="stock-count"> · Stok {product.stock_quantity}</span>
-          )}
+          {available ? "Tersedia" : String(product.availability || "").toLowerCase() === "out of stock" ? "Stok habis" : "Status tidak diketahui"}
         </span>
       </span>
     </button>
@@ -105,7 +132,7 @@ function ProductGrid({ products, onSelect }) {
     <div className="product-grid">
       {products.map((product, index) => (
         <ProductCard
-          key={product.id ?? product.sku ?? index}
+          key={product.id ?? index}
           product={product}
           onSelect={onSelect}
         />
@@ -129,11 +156,14 @@ function ProductQuickView({ product, onClose }) {
   }
 
   const facts = product ? [
-    product.sku ? ["SKU", product.sku] : null,
-    product.category ? ["Kategori", product.category] : null,
-    ["Ketersediaan", product.availability || "Belum diketahui"],
-    product.stock_quantity != null ? ["Stok", product.stock_quantity] : null
+    product.item_group_id ? ["Grup produk", product.item_group_id] : null,
+    product.product_type ? ["Kategori", product.product_type] : null,
+    product.color ? ["Warna", product.color] : null,
+    product.condition ? ["Kondisi", product.condition] : null,
+    ["Ketersediaan", product.availability || "Belum diketahui"]
   ].filter(Boolean) : [];
+  const images = product ? productImages(product) : [];
+  const safeRichDescription = product ? sanitizeRichText(product.rich_text_description) : "";
 
   return (
     <dialog
@@ -155,23 +185,34 @@ function ProductQuickView({ product, onClose }) {
       {product && (
         <section className="detail-panel">
           <div className="detail-image-wrap">
-            {product.image_url ? (
-              <img src={product.image_url} alt={product.title || "Produk"} />
+            {images.length > 0 ? (
+              <div style={{ display: "grid", gap: "0.75rem" }}>
+                <img src={images[0]} alt={product.title || "Produk Divoom"} />
+                {images.length > 1 && (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.5rem" }}>
+                    {images.slice(1).map((src, index) => (
+                      <img key={src} src={src} alt={(product.title || "Produk") + " - gambar " + (index + 2)} loading="lazy" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", borderRadius: "0.5rem" }} />
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
-              <span className="image-placeholder">ASRI</span>
+              <span className="image-placeholder">DIVOOM</span>
             )}
           </div>
           <div className="detail-copy">
             <p className="eyebrow">
-              {product.brand || product.category || "ASRI COLLECTION"}
+              {product.brand || product.product_type || "DIVOOM"}
             </p>
             <h2 id="detail-title">{product.title || "Produk"}</h2>
             <p className="detail-price">
-              {formatPrice(displayPrice(product), product.currency)}
+              {formatPrice(displayPrice(product), "IDR")}
             </p>
-            {product.description && product.description !== "deskripsi belum di atur" && (
+            {safeRichDescription ? (
+              <div className="detail-description" dangerouslySetInnerHTML={{ __html: safeRichDescription }} />
+            ) : product.description ? (
               <p className="detail-description">{product.description}</p>
-            )}
+            ) : null}
             <dl className="detail-facts">
               {facts.map(([label, value]) => (
                 <div key={label}>
@@ -263,7 +304,7 @@ function App() {
     if (!normalizedQuery) return products;
 
     return products.filter((product) =>
-      [product.title, product.brand, product.category, product.sku]
+      [product.title, product.brand, product.product_type, product.color, product.item_group_id, product.description]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(normalizedQuery))
     );
@@ -285,7 +326,7 @@ function App() {
 
       const result = await response.json();
       if (result?.success !== true || !Array.isArray(result.data)) {
-        throw new Error("Format respons get-products tidak sesuai.");
+        throw new Error("Format respons get-divoom-products tidak sesuai.");
       }
 
       setProducts(result.data);

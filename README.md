@@ -33,17 +33,17 @@ The browser must be online to load the CDN libraries, web fonts, product images,
 The current frontend requests the following endpoint from `App.jsx`:
 
 ```text
-GET https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products
+GET https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products
 ```
 
-The frontend expects a JSON response containing `success: true` and a `data` array. It uses product fields including `id`, `title`, `brand`, `category`, `sku`, `price`, `sale_price`, `currency`, `availability`, `stock_quantity`, `image_url`, `labels`, and `description`. The optional `total` field is displayed when supplied.
+The frontend expects a JSON response containing `success: true`, a `data` array, and the optional numeric `total`. Product data comes from `public.divoom_products` and includes `id`, `item_group_id`, `title`, `description`, `rich_text_description`, `availability`, `condition`, `price`, `sale_price`, `link`, `image_link`, `additional_image_link`, `brand`, `google_product_category`, `product_type`, `color`, `size`, `material`, `pattern`, `gender`, `age_group`, and `additional_variant_attribute`. Prices are numeric IDR values; `sale_price` may be `null`. `additional_image_link` is a JSON array. The storefront uses `image_link` for the primary image and the additional image array for the product gallery.
 
 The storefront reads through the Edge Function; it does not query the database directly, initialize the Supabase JavaScript client, or embed a Supabase anon key. It does not substitute demo products when a request fails. The endpoint and its deployed access configuration must be verified independently when the Supabase project or environment changes.
 
 ## Pages and behavior
 
 - **Home:** brand introduction and featured products.
-- **Products:** product catalog with search by title, brand, category, or SKU.
+- **Products:** product catalog with search by title, brand, product type, color, item group, or description.
 - **Product details:** native HTML `<dialog>` controlled by React.
 - **Navigation:** page state synchronized with the URL hash.
 - **BottomNavigation:** Home, Products, and Profile.
@@ -82,7 +82,7 @@ When implementation and documentation differ, verify the source files and update
 - [ ] React, ReactDOM, and Babel CDN scripts load successfully in a browser.
 - [ ] Babel compiles `App.jsx` and React mounts into `#root`.
 - [ ] Browser console has no runtime errors.
-- [ ] `get-products` returns HTTP success and the expected JSON contract.
+- [ ] `get-divoom-products` returns HTTP success and the expected Divoom product JSON contract.
 - [ ] Product search and the native product detail dialog work.
 - [ ] Loading, error, empty, and retry states work.
 - [ ] URL hash navigation works.
