@@ -476,7 +476,7 @@
     "global_stylesheet": "style.css",
     "design_system_blueprint": "blueprint-design-system.json",
     "design_system_documentation": "docs/DESIGN_SYSTEM.md",
-    "responsive_strategy": "mobile-only",
+    "responsive_strategy": "mobile-tablet-desktop",
     "layout_contract": {
       "html_body": "width: 100%; height: 100%; margin: 0",
       "root": "#root",
@@ -484,10 +484,24 @@
       "main": "flexible primary content region"
     },
     "rule": "The design system blueprint is the source of truth for visual tokens; avoid duplicating token definitions in this file.",
-    "mobile_only": {
-      "minimum_viewport_width_px": 320,
-      "maximum_viewport_width_px": 767,
-      "wide_viewport_behavior": "Application remains centered and capped at 767px; no desktop or tablet layout is provided."
+    "responsive_breakpoints": {
+      "mobile": {
+        "minimum_viewport_width_px": 320,
+        "maximum_viewport_width_px": 767
+      },
+      "tablet": {
+        "minimum_viewport_width_px": 768,
+        "maximum_viewport_width_px": 1023
+      },
+      "desktop": {
+        "minimum_viewport_width_px": 1024,
+        "maximum_viewport_width_px": null
+      },
+      "scope": [
+        "Header",
+        "Home",
+        "Products"
+      ]
     }
   },
   "repository_files": {
