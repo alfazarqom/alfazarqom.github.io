@@ -73,7 +73,9 @@
                 "children": [
                   "BrandLockup",
                   "MainNavigation",
-                  "HeaderCTA"
+                  "SearchButton",
+                  "WishlistButton",
+                  "CartButton"
                 ]
               },
               {
@@ -287,10 +289,6 @@
       "source": "App.jsx",
       "behavior_source": "App.jsx"
     },
-    "HeaderCTA": {
-      "implemented": true,
-      "source": "App.jsx"
-    },
     "HeroSection": {
       "implemented": true,
       "source": "App.jsx"
@@ -374,6 +372,21 @@
       "source": "App.jsx",
       "rendering": "React-controlled native HTML dialog",
       "style_source": "style.css"
+    },
+    "SearchButton": {
+      "implemented": true,
+      "source": "App.jsx",
+      "behavior": "Navigates to the Search placeholder route"
+    },
+    "WishlistButton": {
+      "implemented": true,
+      "source": "App.jsx",
+      "behavior": "Navigates to the Wishlist placeholder route"
+    },
+    "CartButton": {
+      "implemented": true,
+      "source": "App.jsx",
+      "behavior": "Navigates to the Cart placeholder route"
     }
   },
   "data": {
