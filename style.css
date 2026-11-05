@@ -710,3 +710,43 @@ body {
   font-size: 12px;
   line-height: 1.8;
 }
+
+
+/* Header composition from the App V1.1 component tree. */
+.site-header {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+}
+.main-navigation {
+  grid-column: auto;
+  grid-row: auto;
+  justify-content: center;
+  gap: 14px;
+}
+.header-utility-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+.header-icon-button {
+  display: grid;
+  width: 32px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 21px;
+  cursor: pointer;
+}
+.header-icon-button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+@media (max-width: 380px) {
+  .site-header { gap: 5px; padding-right: 10px; padding-left: 10px; }
+  .brand-lockup { gap: 6px; }
+  .main-navigation { gap: 8px; }
+  .header-icon-button { width: 28px; }
+}
