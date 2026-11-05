@@ -120,9 +120,14 @@
             ]
           },
           {
-            "component": "ProductDialog",
-            "element": ".product-dialog",
-            "rendering": "React-controlled native HTML dialog"
+            "component": "Overlays",
+            "children": [
+              {
+                "component": "ProductQuickView",
+                "element": ".product-dialog",
+                "rendering": "React-controlled native HTML dialog"
+              }
+            ]
           }
         ]
       }
@@ -216,7 +221,8 @@
       "implemented": true,
       "content_status": "placeholder",
       "navigation": "BottomActionBar",
-      "presentation": "Placeholder page route; ProductDialog remains the existing quick-view overlay."
+      "presentation": "Placeholder page route; ProductDialog remains the existing quick-view overlay.",
+      "note": "Route placeholder. ProductQuickView remains a separate overlay for the existing product-card detail interaction."
     },
     "Orders": {
       "implemented": false,
@@ -316,11 +322,6 @@
       "source": "App.jsx",
       "style_source": "style.css"
     },
-    "ProductDialog": {
-      "implemented": true,
-      "source": "App.jsx",
-      "rendering": "native HTML dialog"
-    },
     "LoadingState": {
       "implemented": true,
       "source": "App.jsx",
@@ -367,6 +368,12 @@
       "implemented": true,
       "source": "App.jsx",
       "placement": "Inside each page"
+    },
+    "ProductQuickView": {
+      "implemented": true,
+      "source": "App.jsx",
+      "rendering": "React-controlled native HTML dialog",
+      "style_source": "style.css"
     }
   },
   "data": {
@@ -425,5 +432,17 @@
     "BottomNavigation is exclusive to Home, Products, and Profile.",
     "BottomActionBar is exclusive to ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.",
     "Do not represent placeholder routes as completed commerce features."
-  ]
+  ],
+  "overlays": {
+    "implemented": [
+      "ProductQuickView"
+    ],
+    "planned": [
+      "CartDrawer",
+      "SearchOverlay",
+      "ConfirmationDialog",
+      "Toast"
+    ],
+    "placement": "Outside AppShell"
+  }
 }
