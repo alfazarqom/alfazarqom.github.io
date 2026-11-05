@@ -707,11 +707,11 @@
     }
   },
   "technology": {
-    "framework": "React 18.3.1",
+    "framework": "React 19.0.0",
     "language": "TypeScript",
     "bundler": "Vite 6",
     "component_library": "Storefront UI React 4.0.3",
-    "styling": "Tailwind CSS 3.4 with Storefront UI preset",
+    "styling": "Tailwind CSS 4.1 with Storefront UI Tailwind configuration",
     "global_css": "Tailwind layers and minimal accessibility/base rules only"
   }
 }
