@@ -5,8 +5,8 @@ const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1
 const ALLOWED_PAGES = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
 
 function resolveLocation() {
-  const pathname = decodeURIComponent(window.location.pathname).replace(/\\/+$/, "") || "/";
-  const productMatch = pathname.match(/^\\/products\\/([a-z0-9]+)$/i);
+  const pathname = decodeURIComponent(window.location.pathname).replace(/\/+$/, "") || "/";
+  const productMatch = pathname.match(/^\/products\/([a-z0-9]+)$/i);
   if (productMatch) return { page: "productDetail", itemGroupId: productMatch[1] };
 
   const requestedPage = window.location.hash.replace("#", "") || "home";
