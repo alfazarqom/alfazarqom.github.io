@@ -147,6 +147,7 @@ function App() {
   function submitCheckout(event) {
     event.preventDefault();
     if (!cartLines.length) { setNotice("Keranjang masih kosong."); showPage("cart"); return; }
+    if (cartLines.some(line => !canBuy(line.product))) { setNotice("Ada produk di keranjang yang tidak lagi tersedia. Periksa keranjang."); showPage("cart"); return; }
     if (!customer.name.trim() || !customer.email.trim() || !customer.phone.trim() || !customer.address.trim() || !customer.city.trim()) { setNotice("Lengkapi data penerima terlebih dahulu."); return; }
     const order = {
       id: "ASRI-" + Date.now().toString(36).toUpperCase(),
@@ -256,7 +257,7 @@ function App() {
 
       {page === "wishlist" && <section className="catalog-section"><Pages.Wishlist products={wishlistProducts} loading={catalogStatus === "loading"} error={catalogError} retry={loadProducts} wishlistIds={wishlistIds} onOpen={openProduct} onToggleWishlist={toggleWishlist} /><Pages.Footer /></section>}
 
-      {page === "profile" && <section className="catalog-section"><Pages.Profile customer={customer} setCustomer={setCustomer} orderCount={orders.length} wishlistCount={wishlistIds.length} cartCount={cartCount} onOrders={() => showPage("orderTracking")} onWishlist={() => showPage("wishlist")} onCart={() => showPage("cart")} /><Pages.Footer /></section>}
+      {page === "profile" && <section className="catalog-section"><Pages.Profile customer={customer} setCustomer={setCustomer} orderCount={orders.length} wishlistCount={wishlistIds.length} cartCount={cartCount} onOrders={() => showPage("orderTracking")} onWishlist={() => showPage("wishlist")} onCart={() => showPage("cart")} onSaved={() => setNotice("Profil lokal disimpan.")} /><Pages.Footer /></section>}
 
       {page === "contact" && <section className="catalog-section"><Pages.Contact form={contactForm} setForm={setContactForm} onCopy={copyContact} /><Pages.Footer /></section>}
     </div></main>
