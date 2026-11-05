@@ -587,11 +587,11 @@
     ]
   },
   "technology": {
-    "frontend": "React 18.3.1",
+    "frontend": "React 19.0.0",
     "language": "TypeScript",
     "bundler": "Vite 6",
     "ui_library": "@storefront-ui/react 4.0.3",
-    "styling": "Tailwind CSS 3.4 + Storefront UI Tailwind preset",
+    "styling": "Tailwind CSS 4.1 + Storefront UI React Tailwind configuration",
     "package_manager": "npm",
     "hosting_target": "GitHub Pages static output (dist)"
   }
