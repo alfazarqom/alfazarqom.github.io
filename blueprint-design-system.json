@@ -45,7 +45,7 @@
     "existing_repository_alignment": {
       "verified_from": [
         "index.html",
-        "style.css"
+        "src/styles/globals.css"
       ],
       "font_families": {
         "body": "DM Sans",
@@ -709,9 +709,9 @@
   "technology": {
     "framework": "React 19.0.0",
     "language": "TypeScript",
-    "bundler": "Vite 6",
-    "component_library": "Storefront UI React 4.0.3",
-    "styling": "Tailwind CSS 4.1 with Storefront UI Tailwind configuration",
+    "bundler": "Vite 6.4.2",
+    "component_library": "@storefront-ui/react 4.0.3",
+    "styling": "Tailwind CSS 4.1.14 + Storefront UI Tailwind configuration",
     "global_css": "Tailwind layers and minimal accessibility/base rules only"
   }
 }
