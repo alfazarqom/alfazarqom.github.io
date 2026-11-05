@@ -163,7 +163,7 @@ function ProductQuickView({ product, onClose }) {
     ["Ketersediaan", product.availability || "Belum diketahui"]
   ].filter(Boolean) : [];
   const images = product ? productImages(product) : [];
-  const safeRichDescription = product ? sanitizeRichText(product.rich_text_description) : [];
+  const safeRichDescription = product ? sanitizeRichText(product.rich_text_description) : "";
 
   return (
     <dialog

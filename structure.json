@@ -51,7 +51,7 @@
       "Keep the current no-build GitHub Pages architecture.",
       "Keep layout ownership at the application shell level.",
       "Separate page content, reusable UI patterns, data access, and styling responsibilities.",
-      "Render product data from the Supabase get-products Edge Function; do not add demo product fallbacks.",
+      "Render Divoom product data from the Supabase get-divoom-products Edge Function; do not add demo product fallbacks.",
       "Treat this file as an architecture reference, not as a claim that conceptual components already exist as separate source files.",
       "The application is mobile-only and supports viewport widths from 320px through 767px."
     ]
@@ -391,21 +391,54 @@
   },
   "data": {
     "provider": "Supabase Edge Function",
-    "source_of_truth": "public.products",
-    "endpoint": "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-products",
+    "source_of_truth": "public.divoom_products",
+    "endpoint": "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products",
     "method": "GET",
     "client": "browser fetch()",
     "service_source": "App.jsx",
     "expected_response": {
       "success": "boolean",
-      "data": "array",
+      "data": "array of Divoom product objects",
       "total": "number"
     },
     "rules": [
       "Do not query the products table directly from this frontend.",
       "Do not add hardcoded or demo product fallback data.",
-      "Validate the HTTP response and expected JSON fields before rendering.",
+      "Validate the HTTP response and Divoom product JSON fields before rendering.",
       "Keep loading, error, retry, and empty states explicit."
+    ],
+    "product_fields": [
+      "id",
+      "item_group_id",
+      "title",
+      "description",
+      "rich_text_description",
+      "availability",
+      "condition",
+      "price",
+      "sale_price",
+      "link",
+      "image_link",
+      "additional_image_link",
+      "brand",
+      "google_product_category",
+      "product_type",
+      "color",
+      "size",
+      "material",
+      "pattern",
+      "gender",
+      "age_group",
+      "additional_variant_attribute",
+      "created_at",
+      "updated_at"
+    ],
+    "field_rules": [
+      "Prices are numeric IDR values; sale_price may be null.",
+      "Use image_link as the primary product image.",
+      "additional_image_link is a JSON array of image URLs for the product gallery.",
+      "Use product_type for the product category and color for the variant color.",
+      "Treat availability values such as in stock and out of stock as catalog status, not as a stock quantity."
     ]
   },
   "styles": {
