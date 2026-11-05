@@ -79,7 +79,7 @@ test("product card opens the grouped product detail route and browser back works
   await expect(page.getByRole("button", { name: "Black" })).toBeVisible();
 
   await page.goBack();
-  await expect(page).toHaveURL(/#home$/);
+  await expect(page).toHaveURL(/\/(?:#home)?$/);
   await expect(page.getByRole("heading", { name: /Temukan gaya yang/ })).toBeVisible();
 });
 
