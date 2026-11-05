@@ -3,8 +3,8 @@
   "meta": {
     "name": "Asri Collection Design System",
     "artifact": "blueprint-design-system.json",
-    "version": "1.1.0",
-    "status": "approved-responsive-v1",
+    "version": "1.2.0",
+    "status": "storefront-ui-v2-migration",
     "platform": "Responsive web storefront",
     "design_direction": "Modern minimal, editorial, premium, mobile-first",
     "source_of_truth": true
@@ -705,5 +705,13 @@
       "minor": "Additive tokens, components, variants, or patterns",
       "major": "Breaking changes to foundations, component contracts, or layout architecture"
     }
+  },
+  "technology": {
+    "framework": "React 18.3.1",
+    "language": "TypeScript",
+    "bundler": "Vite 6",
+    "component_library": "Storefront UI React 4.0.3",
+    "styling": "Tailwind CSS 3.4 with Storefront UI preset",
+    "global_css": "Tailwind layers and minimal accessibility/base rules only"
   }
 }
