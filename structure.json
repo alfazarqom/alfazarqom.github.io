@@ -481,16 +481,15 @@
   },
   "repository_files": {
     "index.html": "Vite HTML entry and GitHub Pages deep-link restoration.",
-    "404.html": "GitHub Pages fallback copied from public/404.html into dist.",
+    "public/404.html": "GitHub Pages fallback copied into dist by Vite.",
     "package.json": "npm dependencies and development/build scripts.",
-    "vite.config.ts": "Vite configuration and dist output.",
-    "tailwind.config.cjs": "Storefront UI preset and ASRI design tokens.",
-    "postcss.config.cjs": "Tailwind and Autoprefixer processing.",
+    "vite.config.ts": "Vite and Tailwind CSS v4 plugin configuration.",
     "tsconfig.json": "TypeScript compiler configuration.",
     "src/main.tsx": "React application entry point.",
     "src/App.tsx": "Application routes, product fetching, UI components, and page rendering.",
-    "src/styles/globals.css": "Tailwind layers and minimal base/accessibility rules.",
-    "blueprint-design-system.json": "Structured design-system specification and visual tokens.",
+    "src/styles/globals.css": "Tailwind v4 imports, Storefront UI configuration, ASRI theme tokens, and minimal base/accessibility rules.",
+    "blueprint-design-system.json": "Structured design-system specification and visual token source.",
+    "docs/DESIGN_SYSTEM.md": "Human-readable design-system rules.",
     "docs/STOREFRONT_UI_V2_MIGRATION.md": "Approved migration requirements and deployment boundary."
   },
   "constraints": [
@@ -501,7 +500,7 @@
     "BottomActionBar is exclusive to ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.",
     "Do not represent placeholder routes as completed commerce features.",
     "ProductCard navigates to /products/{item_group_id}; ProductQuickView is not the product-card navigation target.",
-    "Use React npm packages, Vite, TypeScript, and Storefront UI React; do not restore CDN runtime or Vite TypeScript build.",
+    "Use React npm packages, Vite, TypeScript, and Storefront UI React; do not restore CDN runtime or Babel Standalone.",
     "Use Tailwind utility classes and Storefront UI preset; avoid a bespoke global stylesheet.",
     "ProductCard navigates to /products/{item_group_id}; item_group_id is the product group identifier.",
     "Do not modify the Supabase Edge Function, response contract, database, or backend behavior."
