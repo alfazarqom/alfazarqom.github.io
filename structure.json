@@ -3,8 +3,8 @@
   "meta": {
     "name": "Asri Collection App Structure",
     "artifact": "structure.json",
-    "version": "1.4.0",
-    "status": "current",
+    "version": "2.0.0",
+    "status": "implemented-pending-verification",
     "purpose": "Application architecture and UI composition blueprint",
     "source_of_truth": true,
     "last_updated": "2026-11-05"
@@ -473,57 +473,38 @@
     ]
   },
   "styles": {
-    "global_stylesheet": "style.css",
+    "global_stylesheet": "src/styles/globals.css",
     "design_system_blueprint": "blueprint-design-system.json",
     "design_system_documentation": "docs/DESIGN_SYSTEM.md",
     "responsive_strategy": "mobile-tablet-desktop",
-    "layout_contract": {
-      "html_body": "width: 100%; height: 100%; margin: 0",
-      "root": "#root",
-      "app_shell": "full-height flex column",
-      "main": "flexible primary content region"
-    },
-    "rule": "The design system blueprint is the source of truth for visual tokens; avoid duplicating token definitions in this file.",
-    "responsive_breakpoints": {
-      "mobile": {
-        "minimum_viewport_width_px": 320,
-        "maximum_viewport_width_px": 767
-      },
-      "tablet": {
-        "minimum_viewport_width_px": 768,
-        "maximum_viewport_width_px": 1023
-      },
-      "desktop": {
-        "minimum_viewport_width_px": 1024,
-        "maximum_viewport_width_px": null
-      },
-      "scope": [
-        "Header",
-        "Home",
-        "Products"
-      ]
-    }
+    "styling_policy": "Storefront UI components + Tailwind utility classes; no legacy stylesheet"
   },
   "repository_files": {
-    "index.html": "HTML document, root mount point, React and Babel CDN runtime, and URL restoration for GitHub Pages deep links.",
-    "App.jsx": "React application, route resolution, product fetching, search, and product group detail page.",
-    "style.css": "Global styles, layout, components, product detail route, and responsive rules.",
-    "README.md": "Project overview, technology, data source, local preview, and GitHub Pages instructions",
-    "blueprint-design-system.json": "Structured design-system specification and visual token source",
-    "docs/DESIGN_SYSTEM.md": "Human-readable design-system documentation",
-    "structure.json": "Application structure and architecture blueprint",
-    "404.html": "GitHub Pages fallback redirect that preserves the requested deep route and query string."
+    "index.html": "Vite HTML entry and GitHub Pages deep-link restoration.",
+    "404.html": "GitHub Pages fallback copied from public/404.html into dist.",
+    "package.json": "npm dependencies and development/build scripts.",
+    "vite.config.ts": "Vite configuration and dist output.",
+    "tailwind.config.cjs": "Storefront UI preset and ASRI design tokens.",
+    "postcss.config.cjs": "Tailwind and Autoprefixer processing.",
+    "tsconfig.json": "TypeScript compiler configuration.",
+    "src/main.tsx": "React application entry point.",
+    "src/App.tsx": "Application routes, product fetching, UI components, and page rendering.",
+    "src/styles/globals.css": "Tailwind layers and minimal base/accessibility rules.",
+    "blueprint-design-system.json": "Structured design-system specification and visual tokens.",
+    "docs/STOREFRONT_UI_V2_MIGRATION.md": "Approved migration requirements and deployment boundary."
   },
   "constraints": [
-    "Describe the current implementation as a React CDN application with native CSS and no build step.",
     "Do not claim Vite, TypeScript, npm scripts, React Router, or a build pipeline are implemented.",
-    "React and ReactDOM are loaded from CDN; Babel Standalone compiles JSX in the browser.",
     "Do not add demo product fallback data when the Supabase Edge Function request fails.",
     "Architecture changes must be reflected in this file when the implementation changes.",
     "BottomNavigation is exclusive to Home, Products, and Profile.",
     "BottomActionBar is exclusive to ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.",
     "Do not represent placeholder routes as completed commerce features.",
-    "ProductCard navigates to /products/{item_group_id}; ProductQuickView is not the product-card navigation target."
+    "ProductCard navigates to /products/{item_group_id}; ProductQuickView is not the product-card navigation target.",
+    "Use React npm packages, Vite, TypeScript, and Storefront UI React; do not restore CDN runtime or Babel Standalone.",
+    "Use Tailwind utility classes and Storefront UI preset; avoid a bespoke global stylesheet.",
+    "ProductCard navigates to /products/{item_group_id}; item_group_id is the product group identifier.",
+    "Do not modify the Supabase Edge Function, response contract, database, or backend behavior."
   ],
   "overlays": {
     "implemented": [],
@@ -604,5 +585,14 @@
       "Main",
       "active bottom navigation component"
     ]
+  },
+  "technology": {
+    "frontend": "React 18.3.1",
+    "language": "TypeScript",
+    "bundler": "Vite 6",
+    "ui_library": "@storefront-ui/react 4.0.3",
+    "styling": "Tailwind CSS 3.4 + Storefront UI Tailwind preset",
+    "package_manager": "npm",
+    "hosting_target": "GitHub Pages static output (dist)"
   }
 }
