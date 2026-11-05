@@ -105,45 +105,94 @@
                             "children": [
                               "CatalogHeading",
                               "CatalogToolbar",
-                              "ProductGrid"
+                              "ProductGrid",
+                              "PageFooter"
                             ]
                           },
-                          "PageFooter",
                           {
                             "page": "ProductDetail",
-                            "component": "Pages.Detail"
+                            "component": "Pages.Detail",
+                            "children": [
+                              "ProductInformation",
+                              "AvailabilityIndicator",
+                              "WishlistAction",
+                              "AddToCartAction",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "Search",
-                            "component": "Pages.Search"
+                            "component": "Pages.Search",
+                            "children": [
+                              "SearchField",
+                              "SearchResults",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "Cart",
-                            "component": "Pages.Cart"
+                            "component": "Pages.Cart",
+                            "children": [
+                              "CartItems",
+                              "QuantityControl",
+                              "CartSummary",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "Checkout",
-                            "component": "Pages.Checkout"
+                            "component": "Pages.Checkout",
+                            "children": [
+                              "GuestRecipientForm",
+                              "OrderSummary",
+                              "LocalDraftAction",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "OrderSuccess",
-                            "component": "Pages.OrderSuccess"
+                            "component": "Pages.OrderSuccess",
+                            "children": [
+                              "LocalDraftReference",
+                              "LocalDraftNotice",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "OrderTracking",
-                            "component": "Pages.Tracking"
+                            "component": "Pages.Tracking",
+                            "children": [
+                              "LocalDraftLookup",
+                              "LocalDraftList",
+                              "LocalDraftDetails",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "Wishlist",
-                            "component": "Pages.Wishlist"
+                            "component": "Pages.Wishlist",
+                            "children": [
+                              "WishlistGrid",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "Profile",
-                            "component": "Pages.Profile"
+                            "component": "Pages.Profile",
+                            "children": [
+                              "GuestProfileForm",
+                              "ProfileShortcuts",
+                              "PageFooter"
+                            ]
                           },
                           {
                             "page": "Contact",
-                            "component": "Pages.Contact"
+                            "component": "Pages.Contact",
+                            "children": [
+                              "ContactDraftForm",
+                              "CopyDraftAction",
+                              "PageFooter"
+                            ]
                           }
                         ]
                       }
@@ -282,8 +331,8 @@
       "implemented": true,
       "content_status": "implemented",
       "navigation": "BottomActionBar",
-      "presentation": "Placeholder page route; ProductDialog remains the existing quick-view overlay.",
-      "note": "Route placeholder. ProductQuickView remains a separate overlay for the existing product-card detail interaction.",
+      "presentation": "Dedicated full-page product detail route; ProductQuickView remains a separate overlay.",
+      "note": "Full-page product details are rendered from the current catalog; the quick-view dialog remains a separate overlay.",
       "features": [
         "Catalog-backed product detail",
         "Availability and stock information",
