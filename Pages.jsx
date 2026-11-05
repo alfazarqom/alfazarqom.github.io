@@ -127,7 +127,7 @@ const AsriPages = (() => {
         h("button", { className: "button button-dark", type: "button", disabled: !order, onClick: onTrack }, "Lihat draft"),
         h("button", { className: "button button-outline", type: "button", onClick: onShop }, "Kembali belanja")));
   }
-  function Tracking({ orders, activeOrder, trackingInput, setTrackingInput, onLookup }) {
+  function Tracking({ orders, activeOrder, trackingInput, setTrackingInput, onLookup, onSelectOrder }) {
     return h(React.Fragment, null,
       h(Heading, { eyebrow: "RIWAYAT LOKAL", title: "Lacak pesanan.", description: "Pencarian hanya mencakup draft yang tersimpan di browser perangkat ini." }),
       h("form", { className: "tracking-form", onSubmit: onLookup },
@@ -139,7 +139,8 @@ const AsriPages = (() => {
         h("p", null, (activeOrder.customer?.name || "") + " · " + (activeOrder.customer?.city || "")),
         h("div", { className: "summary-total" }, h("span", null, "Subtotal"), h("strong", null, money(activeOrder.subtotal))),
         h("p", { className: "notice-text" }, activeOrder.notice)) :
-        h(Empty, { title: "Belum ada draft yang dipilih", description: "Masukkan nomor referensi lokal atau buat draft melalui checkout." }));
+        (orders.length ? h("div", { className: "local-order-list" }, h("h2", null, "Draft tersimpan"), orders.map(order => h("button", { className: "local-order-row", key: order.id, type: "button", onClick: () => onSelectOrder(order.id) }, h("span", null, order.id), h("strong", null, money(order.subtotal)), h("small", null, new Date(order.createdAt).toLocaleDateString("id-ID"))))) :
+          h(Empty, { title: "Belum ada draft", description: "Buat draft melalui checkout untuk melihat referensi lokal." })));
   }
   function Wishlist({ products, loading, error, retry, wishlistIds, onOpen, onToggleWishlist }) {
     return h(React.Fragment, null,
