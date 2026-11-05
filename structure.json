@@ -436,12 +436,12 @@
     },
     "ProductGrid": {
       "implemented": true,
-      "source": "Pages.jsx",
+      "source": "Pages.js",
       "style_source": "style.css"
     },
     "ProductCard": {
       "implemented": true,
-      "source": "Pages.jsx",
+      "source": "Pages.js",
       "style_source": "style.css",
       "features": [
         "Open quick view",
@@ -460,7 +460,7 @@
     },
     "EmptyState": {
       "implemented": true,
-      "source": "Pages.jsx",
+      "source": "Pages.js",
       "style_source": "style.css"
     },
     "Footer": {
@@ -495,7 +495,7 @@
     },
     "PageFooter": {
       "implemented": true,
-      "source": "Pages.jsx",
+      "source": "Pages.js",
       "placement": "Rendered inside each page component"
     },
     "ProductQuickView": {
@@ -527,7 +527,7 @@
     },
     "PageComponents": {
       "implemented": true,
-      "source": "Pages.jsx",
+      "source": "Pages.js",
       "components": [
         "Detail",
         "Search",
@@ -586,7 +586,7 @@
     "blueprint-design-system.json": "Structured design-system specification and visual token source",
     "docs/DESIGN_SYSTEM.md": "Human-readable design-system documentation",
     "structure.json": "Application structure and architecture blueprint",
-    "Pages.jsx": "Page-level React components loaded before App.jsx by Babel Standalone."
+    "Pages.js": "Page-level React components using React.createElement, loaded synchronously before App.jsx."
   },
   "constraints": [
     "Describe the current implementation as a React CDN application with native CSS and no build step.",
