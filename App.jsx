@@ -114,7 +114,7 @@ function ProductGrid({ products, onSelect }) {
   );
 }
 
-function ProductDialog({ product, onClose }) {
+function ProductQuickView({ product, onClose }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -190,10 +190,67 @@ function ProductDialog({ product, onClose }) {
   );
 }
 
+
+function PageFooter() {
+  return (
+    <footer className="page-footer">
+      <span className="footer-brand">ASRI COLLECTION</span>
+      <span>Considered style, made personal.</span>
+      <span>© {new Date().getFullYear()} Asri Collection</span>
+    </footer>
+  );
+}
+
+function BottomNavigation({ page, onNavigate }) {
+  const items = [
+    ["home", "Beranda", "⌂"],
+    ["products", "Produk", "▦"],
+    ["profile", "Profil", "○"]
+  ];
+  return (
+    <nav className="bottom-navigation" aria-label="Navigasi bawah">
+      {items.map(([id, label, icon]) => (
+        <button key={id} type="button"
+          className={`bottom-navigation-item ${page === id ? "is-active" : ""}`}
+          aria-current={page === id ? "page" : undefined}
+          onClick={() => onNavigate(id)}>
+          <span className="bottom-navigation-icon" aria-hidden="true">{icon}</span>
+          <span>{label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+function BottomActionBar({ page, onNavigate }) {
+  const labels = {
+    productDetail: "Detail Produk", search: "Pencarian", cart: "Keranjang",
+    checkout: "Checkout", orderSuccess: "Pesanan Berhasil",
+    orderTracking: "Lacak Pesanan", wishlist: "Wishlist", contact: "Kontak"
+  };
+  return (
+    <nav className="bottom-action-bar" aria-label={labels[page] || "Aksi halaman"}>
+      <button type="button" className="action-back-button" onClick={() => onNavigate("products")}>
+        ← Kembali ke produk
+      </button>
+    </nav>
+  );
+}
+
+function PagePlaceholder({ title }) {
+  return (
+    <section className="placeholder-page">
+      <p className="eyebrow">ASRI COLLECTION</p>
+      <h1>{title}</h1>
+      <p>Halaman ini sudah terdaftar dalam struktur aplikasi, tetapi fitur dan kontennya belum diimplementasikan.</p>
+    </section>
+  );
+}
+
 function App() {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(
-    window.location.hash === "#products" ? "products" : "home"
+    window.location.hash.replace("#", "") || "home"
   );
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("loading");
@@ -246,7 +303,8 @@ function App() {
   }
 
   function showPage(nextPage) {
-    const normalizedPage = nextPage === "products" ? "products" : "home";
+    const allowedPages = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
+    const normalizedPage = allowedPages.includes(nextPage) ? nextPage : "home";
     setPage(normalizedPage);
 
     if (window.location.hash !== `#${normalizedPage}`) {
@@ -263,7 +321,9 @@ function App() {
     loadProducts();
 
     const handleHashChange = () => {
-      setPage(window.location.hash === "#products" ? "products" : "home");
+      const requestedPage = window.location.hash.replace("#", "") || "home";
+      const allowedPages = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
+      setPage(allowedPages.includes(requestedPage) ? requestedPage : "home");
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -314,13 +374,11 @@ function App() {
           </button>
         </nav>
 
-        <button
-          className="header-cta"
-          type="button"
-          onClick={() => showPage("products")}
-        >
-          Jelajahi <span aria-hidden="true">↗</span>
-        </button>
+        <div className="header-utility-actions" aria-label="Aksi cepat">
+          <button className="header-icon-button" type="button" aria-label="Cari" onClick={() => showPage("search")}>⌕</button>
+          <button className="header-icon-button" type="button" aria-label="Wishlist" onClick={() => showPage("wishlist")}>♡</button>
+          <button className="header-icon-button" type="button" aria-label="Keranjang" onClick={() => showPage("cart")}>♧</button>
+        </div>
       </header>
 
       <main className="main-content">
@@ -376,8 +434,9 @@ function App() {
                   status === "error" ? <ErrorState message={error} onRetry={loadProducts} /> :
                   <ProductGrid products={featuredProducts} onSelect={setSelectedProduct} />}
               </section>
+              <PageFooter />
             </section>
-          ) : (
+          ) : page === "products" ? (
             <section id="products-page" className="catalog-section">
               <div className="catalog-heading">
                 <p className="eyebrow">THE ASRI EDIT</p>
@@ -405,18 +464,29 @@ function App() {
               {status === "loading" ? <LoadingState /> :
                 status === "error" ? <ErrorState message={error} onRetry={loadProducts} /> :
                 <ProductGrid products={filteredProducts} onSelect={setSelectedProduct} />}
+              <PageFooter />
+            </section>
+          ) : (
+            <section className="catalog-section">
+              <PagePlaceholder title={{
+                productDetail: "Detail Produk", search: "Pencarian", cart: "Keranjang",
+                checkout: "Checkout", orderSuccess: "Pesanan Berhasil",
+                orderTracking: "Lacak Pesanan", wishlist: "Wishlist",
+                profile: "Profil", contact: "Kontak"
+              }[page] || "Halaman"} />
+              <PageFooter />
             </section>
           )}
         </div>
       </main>
 
-      <footer className="site-footer">
-        <span className="footer-brand">ASRI COLLECTION</span>
-        <span>Considered style, made personal.</span>
-        <span>© {new Date().getFullYear()} Asri Collection</span>
-      </footer>
+      {["home", "products", "profile"].includes(page) ? (
+        <BottomNavigation page={page} onNavigate={showPage} />
+      ) : (
+        <BottomActionBar page={page} onNavigate={showPage} />
+      )}
 
-      <ProductDialog
+      <ProductQuickView
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
       />
