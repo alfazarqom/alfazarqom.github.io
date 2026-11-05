@@ -44,8 +44,9 @@ The storefront reads through the Edge Function; it does not query the database d
 
 - **Home:** brand introduction and featured products.
 - **Products:** product catalog with search by title, brand, product type, color, item group, or description.
-- **Product details:** native HTML `<dialog>` controlled by React.
-- **Navigation:** page state synchronized with the URL hash.
+- **Product details:** dedicated `/products/{item_group_id}` route; all variants sharing the group ID are selectable on one detail page.
+- **Navigation:** product details use the URL path and browser history; other placeholder pages retain hash-based navigation.
+- **GitHub Pages deep links:** `404.html` loads the same application entry point so direct product URLs and refreshes can be handled by the client.
 - **BottomNavigation:** Home, Products, and Profile.
 - **BottomActionBar:** ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.
 - **Footer:** rendered inside each page.
@@ -83,7 +84,11 @@ When implementation and documentation differ, verify the source files and update
 - [ ] Babel compiles `App.jsx` and React mounts into `#root`.
 - [ ] Browser console has no runtime errors.
 - [ ] `get-divoom-products` returns HTTP success and the expected Divoom product JSON contract.
-- [ ] Product search and the native product detail dialog work.
+- [ ] Product search works.
+- [ ] Clicking a product card opens `/products/{item_group_id}`.
+- [ ] Product detail displays every variant sharing the selected `item_group_id`.
+- [ ] Direct product URLs and refreshes load through the GitHub Pages `404.html` fallback.
+- [ ] Browser back and forward restore the correct product route.
 - [ ] Loading, error, empty, and retry states work.
 - [ ] URL hash navigation works.
 - [ ] Mobile layout remains usable at 320px, 390px, and 767px.
