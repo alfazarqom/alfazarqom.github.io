@@ -33,7 +33,7 @@
       "library": null,
       "mechanism": "window.location.pathname, window.location.hash, history.pushState, popstate, and hashchange",
       "product_detail_pattern": "/products/{item_group_id}",
-      "direct_url_fallback": "404.html serves the application entry point for GitHub Pages deep links",
+      "direct_url_fallback": "404.html redirects to the root entry point with the requested path encoded in ?p=; index.html restores the original pathname before React resolves the route.",
       "implemented_pages": [
         "home",
         "products",
@@ -476,14 +476,14 @@
     }
   },
   "repository_files": {
-    "index.html": "HTML document, root mount point, React and Babel CDN runtime, and App.jsx entry",
+    "index.html": "HTML document, root mount point, React and Babel CDN runtime, and URL restoration for GitHub Pages deep links.",
     "App.jsx": "React application, route resolution, product fetching, search, and product group detail page.",
     "style.css": "Global styles, layout, components, product detail route, and responsive rules.",
     "README.md": "Project overview, technology, data source, local preview, and GitHub Pages instructions",
     "blueprint-design-system.json": "Structured design-system specification and visual token source",
     "docs/DESIGN_SYSTEM.md": "Human-readable design-system documentation",
     "structure.json": "Application structure and architecture blueprint",
-    "404.html": "GitHub Pages fallback document for direct product route requests."
+    "404.html": "GitHub Pages fallback redirect that preserves the requested deep route and query string."
   },
   "constraints": [
     "Describe the current implementation as a React CDN application with native CSS and no build step.",
