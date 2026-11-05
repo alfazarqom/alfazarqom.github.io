@@ -184,6 +184,15 @@ function ProductSearch({ value, onChange, variant = "catalog", onSubmit }) {
   );
 }
 
+function ProductCount({ status, filteredCount, total }) {
+  let label = `${filteredCount} produk`;
+  if (status === "loading") label = "Memuat produk...";
+  else if (status === "error") label = "Katalog tidak tersedia";
+  else if (total !== null) label = `${filteredCount} dari ${total} produk`;
+
+  return <span className="product-count" aria-live="polite">{label}</span>;
+}
+
 function ProductQuickView({ product, onClose }) {
   const dialogRef = useRef(null);
 
@@ -655,12 +664,7 @@ function App() {
                 <p>Temukan item pilihan yang menyatukan kualitas, fungsi, dan karakter.</p>
               </div>
               <div className="catalog-toolbar">
-                <span>
-                  {status === "loading" ? "Memuat produk..." :
-                    status === "error" ? "Katalog tidak tersedia" :
-                    total !== null ? `${filteredProducts.length} dari ${total} produk` :
-                    `${filteredProducts.length} produk`}
-                </span>
+                <ProductCount status={status} filteredCount={filteredProducts.length} total={total} />
                 <ProductSearch value={query} onChange={setQuery} />
               </div>
               {status === "loading" ? <LoadingState /> :
