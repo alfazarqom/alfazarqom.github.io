@@ -72,7 +72,7 @@ function sanitizeRichText(html: string | undefined): string {
 }
 
 function PrimaryButton({ children, onClick, type = "button" }: { children: ReactNode; onClick?: () => void; type?: "button" | "submit" }) {
-  return <SfButton type={type} onClick={onClick} className="!min-h-11 !rounded-sm !bg-asri-green !px-5 !font-semibold !text-white hover:!bg-asri-dark">{children}</SfButton>;
+  return <SfButton type={type} onClick={onClick} className="min-h-11 rounded-sm bg-asri-green px-5 font-semibold text-white hover:bg-asri-dark">{children}</SfButton>;
 }
 
 function LoadingState() {
