@@ -1,6 +1,6 @@
 # Asri Collection — React CDN (No Build)
 
-Asri Collection is a responsive storefront hosted as a static website on GitHub Pages. The application uses React loaded from a CDN, with Babel Standalone compiling JSX in the browser. It intentionally has no Node.js, npm, Vite, bundler, or build step.
+Asri Collection is a mobile-only storefront hosted as a static website on GitHub Pages. The supported viewport width is 320–767px; wider screens show the same centered mobile layout capped at 767px. The application uses React loaded from a CDN, with Babel Standalone compiling JSX in the browser. It intentionally has no Node.js, npm, Vite, bundler, or build step.
 
 ## Repository structure
 
@@ -45,8 +45,12 @@ The storefront reads through the Edge Function; it does not query the database d
 - **Home:** brand introduction and featured products.
 - **Products:** product catalog with search by title, brand, category, or SKU.
 - **Product details:** native HTML `<dialog>` controlled by React.
-- **Navigation:** home/products state synchronized with the URL hash.
-- **Responsive layout:** desktop and mobile rules in `style.css`.
+- **Navigation:** page state synchronized with the URL hash.
+- **BottomNavigation:** Home, Products, and Profile.
+- **BottomActionBar:** ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.
+- **Footer:** rendered inside each page.
+- **Mobile-only layout:** 320–767px; no tablet or desktop layout.
+- **Page status:** Home and Products retain their existing features. Profile and the other target routes currently render placeholders; their commerce functionality is not implemented.
 - **Feedback:** loading, error, empty, and retry states.
 
 ## Local preview
@@ -82,5 +86,9 @@ When implementation and documentation differ, verify the source files and update
 - [ ] Product search and the native product detail dialog work.
 - [ ] Loading, error, empty, and retry states work.
 - [ ] URL hash navigation works.
-- [ ] Mobile and desktop layouts remain usable.
+- [ ] Mobile layout remains usable at 320px, 390px, and 767px.
+- [ ] BottomNavigation appears only on Home, Products, and Profile.
+- [ ] BottomActionBar appears only on ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.
+- [ ] Footer is nested inside each page.
+- [ ] Viewports wider than 767px do not activate a desktop/tablet layout.
 - [ ] No privileged Supabase credential is embedded in frontend files.
