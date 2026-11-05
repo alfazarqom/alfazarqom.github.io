@@ -114,7 +114,7 @@ function ProductGrid({ products, onSelect }) {
   );
 }
 
-function ProductDialog({ product, onClose }) {
+function ProductQuickView({ product, onClose }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -321,7 +321,9 @@ function App() {
     loadProducts();
 
     const handleHashChange = () => {
-      setPage(window.location.hash.replace("#", "") || "home");
+      const requestedPage = window.location.hash.replace("#", "") || "home";
+      const allowedPages = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
+      setPage(allowedPages.includes(requestedPage) ? requestedPage : "home");
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -486,7 +488,7 @@ function App() {
         <BottomActionBar page={page} onNavigate={showPage} />
       )}
 
-      <ProductDialog
+      <ProductQuickView
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
       />
