@@ -71,7 +71,7 @@ test("responsive header and navigation work from mobile through desktop", async 
 test("product card opens the grouped product detail route and browser back works", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Lihat detail Ditoo Pro" }).click();
+  await page.getByRole("button", { name: "Lihat detail Ditoo Pro" }).first().click();
 
   await expect(page).toHaveURL(/\/products\/ditoopro$/);
   await expect(page.getByRole("heading", { name: "Ditoo Pro" })).toBeVisible();
