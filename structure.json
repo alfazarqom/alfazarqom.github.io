@@ -3,7 +3,7 @@
   "meta": {
     "name": "Asri Collection App Structure",
     "artifact": "structure.json",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "status": "current",
     "purpose": "Application architecture and UI composition blueprint",
     "source_of_truth": true,
@@ -34,15 +34,26 @@
       "mechanism": "React state and window.location.hash",
       "implemented_pages": [
         "home",
-        "products"
-      ]
+        "products",
+        "profile",
+        "productDetail",
+        "search",
+        "cart",
+        "checkout",
+        "orderSuccess",
+        "orderTracking",
+        "wishlist",
+        "contact"
+      ],
+      "note": "Home and Products retain their existing storefront features. Profile and the remaining routes currently render explicit placeholders pending feature implementation."
     },
     "principles": [
       "Keep the current no-build GitHub Pages architecture.",
       "Keep layout ownership at the application shell level.",
       "Separate page content, reusable UI patterns, data access, and styling responsibilities.",
       "Render product data from the Supabase get-products Edge Function; do not add demo product fallbacks.",
-      "Treat this file as an architecture reference, not as a claim that conceptual components already exist as separate source files."
+      "Treat this file as an architecture reference, not as a claim that conceptual components already exist as separate source files.",
+      "The application is mobile-only and supports viewport widths from 320px through 767px."
     ]
   },
   "app": {
@@ -93,7 +104,8 @@
                               "CatalogToolbar",
                               "ProductGrid"
                             ]
-                          }
+                          },
+                          "PageFooter"
                         ]
                       }
                     ]
@@ -101,8 +113,9 @@
                 ]
               },
               {
-                "component": "Footer",
-                "element": ".site-footer"
+                "component": "PageNavigation",
+                "element": ".bottom-navigation | .bottom-action-bar",
+                "rendering": "Exactly one navigation component is rendered according to the active page."
               }
             ]
           },
@@ -113,6 +126,40 @@
           }
         ]
       }
+    },
+    "navigation_policy": {
+      "mobile_only": true,
+      "supported_viewport_width_px": {
+        "minimum": 320,
+        "maximum": 767
+      },
+      "BottomNavigation": {
+        "pages": [
+          "Home",
+          "Products",
+          "Profile"
+        ],
+        "mutually_exclusive_with": "BottomActionBar"
+      },
+      "BottomActionBar": {
+        "pages": [
+          "ProductDetail",
+          "Search",
+          "Cart",
+          "Checkout",
+          "OrderSuccess",
+          "OrderTracking",
+          "Wishlist",
+          "Contact"
+        ],
+        "mutually_exclusive_with": "BottomNavigation"
+      },
+      "footer": "Footer is rendered inside each page.",
+      "order": [
+        "Header",
+        "Main",
+        "active bottom navigation component"
+      ]
     }
   },
   "layouts": {
@@ -123,8 +170,9 @@
       "regions": [
         "Header",
         "Main",
-        "Footer"
-      ]
+        "PageNavigation"
+      ],
+      "footer_ownership": "Each page owns and renders its own PageFooter."
     },
     "Main": {
       "implemented": true,
@@ -166,9 +214,9 @@
     },
     "ProductDetail": {
       "implemented": true,
-      "presentation": "ProductDetailDialog",
-      "element": ".product-dialog",
-      "note": "A native HTML dialog controlled by React, not a standalone route or page."
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar",
+      "presentation": "Placeholder page route; ProductDialog remains the existing quick-view overlay."
     },
     "Orders": {
       "implemented": false,
@@ -177,6 +225,46 @@
     "Livechat": {
       "implemented": false,
       "status": "not-in-current-repository-baseline"
+    },
+    "Profile": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomNavigation"
+    },
+    "Search": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
+    },
+    "Cart": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
+    },
+    "Checkout": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
+    },
+    "OrderSuccess": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
+    },
+    "OrderTracking": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
+    },
+    "Wishlist": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
+    },
+    "Contact": {
+      "implemented": true,
+      "content_status": "placeholder",
+      "navigation": "BottomActionBar"
     }
   },
   "components": {
@@ -249,6 +337,36 @@
     "Footer": {
       "implemented": true,
       "source": "App.jsx"
+    },
+    "BottomNavigation": {
+      "implemented": true,
+      "source": "App.jsx",
+      "style_source": "style.css",
+      "pages": [
+        "Home",
+        "Products",
+        "Profile"
+      ]
+    },
+    "BottomActionBar": {
+      "implemented": true,
+      "source": "App.jsx",
+      "style_source": "style.css",
+      "pages": [
+        "ProductDetail",
+        "Search",
+        "Cart",
+        "Checkout",
+        "OrderSuccess",
+        "OrderTracking",
+        "Wishlist",
+        "Contact"
+      ]
+    },
+    "PageFooter": {
+      "implemented": true,
+      "source": "App.jsx",
+      "placement": "Inside each page"
     }
   },
   "data": {
@@ -274,14 +392,19 @@
     "global_stylesheet": "style.css",
     "design_system_blueprint": "blueprint-design-system.json",
     "design_system_documentation": "docs/DESIGN_SYSTEM.md",
-    "responsive_strategy": "mobile-first responsive web",
+    "responsive_strategy": "mobile-only",
     "layout_contract": {
       "html_body": "width: 100%; height: 100%; margin: 0",
       "root": "#root",
       "app_shell": "full-height flex column",
       "main": "flexible primary content region"
     },
-    "rule": "The design system blueprint is the source of truth for visual tokens; avoid duplicating token definitions in this file."
+    "rule": "The design system blueprint is the source of truth for visual tokens; avoid duplicating token definitions in this file.",
+    "mobile_only": {
+      "minimum_viewport_width_px": 320,
+      "maximum_viewport_width_px": 767,
+      "wide_viewport_behavior": "Application remains centered and capped at 767px; no desktop or tablet layout is provided."
+    }
   },
   "repository_files": {
     "index.html": "HTML document, root mount point, React and Babel CDN runtime, and App.jsx entry",
@@ -298,7 +421,9 @@
     "React and ReactDOM are loaded from CDN; Babel Standalone compiles JSX in the browser.",
     "Keep the product detail experience as a native HTML dialog unless a separate route is explicitly approved.",
     "Do not add demo product fallback data when the Supabase Edge Function request fails.",
-    "Do not add BottomNavigation, Orders, or Livechat to the implemented tree unless the application scope is explicitly revised.",
-    "Architecture changes must be reflected in this file when the implementation changes."
+    "Architecture changes must be reflected in this file when the implementation changes.",
+    "BottomNavigation is exclusive to Home, Products, and Profile.",
+    "BottomActionBar is exclusive to ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.",
+    "Do not represent placeholder routes as completed commerce features."
   ]
 }
