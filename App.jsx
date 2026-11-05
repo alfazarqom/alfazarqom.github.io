@@ -19,6 +19,7 @@ function money(value, currency = "IDR") {
 }
 function productId(product) { return String(product?.id ?? product?.sku ?? ""); }
 function canBuy(product) { return String(product?.availability || "").trim().toLowerCase() === "available"; }
+function hasValidPrice(product) { const value = priceOf(product); return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value)); }
 function readRoute() {
   const [page, query = ""] = window.location.hash.replace(/^#/, "").split("?");
   return { page: PAGE_NAMES.includes(page) ? page : "home", params: new URLSearchParams(query) };
@@ -125,6 +126,7 @@ function App() {
   }
   function addToCart(product, quantity = 1) {
     if (!product || !canBuy(product)) { setNotice("Produk ini belum tersedia untuk dibeli."); return; }
+    if (!hasValidPrice(product)) { setNotice("Harga produk belum tersedia atau belum valid."); return; }
     const id = productId(product);
     setCart(current => {
       const existing = current.find(line => String(line.productId) === id);
@@ -148,6 +150,7 @@ function App() {
     event.preventDefault();
     if (!cartLines.length) { setNotice("Keranjang masih kosong."); showPage("cart"); return; }
     if (cartLines.some(line => !canBuy(line.product))) { setNotice("Ada produk di keranjang yang tidak lagi tersedia. Periksa keranjang."); showPage("cart"); return; }
+    if (cartLines.some(line => !hasValidPrice(line.product))) { setNotice("Ada produk dengan harga yang belum valid. Periksa katalog sebelum checkout."); showPage("cart"); return; }
     if (!customer.name.trim() || !customer.email.trim() || !customer.phone.trim() || !customer.address.trim() || !customer.city.trim()) { setNotice("Lengkapi data penerima terlebih dahulu."); return; }
     const order = {
       id: "ASRI-" + Date.now().toString(36).toUpperCase(),
@@ -243,13 +246,13 @@ function App() {
         <Pages.Footer />
       </section>}
 
-      {page === "productDetail" && <section className="catalog-section"><Pages.Heading eyebrow="DETAIL PRODUK" title="Pilihan untukmu." description="Informasi produk dari katalog." /><Pages.Detail product={selectedProduct} wishlistIds={wishlistIds} onToggleWishlist={toggleWishlist} onAdd={addToCart} /><Pages.Footer /></section>}
+      {page === "productDetail" && <section className="catalog-section"><Pages.Heading eyebrow="DETAIL PRODUK" title="Pilihan untukmu." description="Informasi produk dari katalog." />{catalogStatus === "loading" ? <LoadingState /> : catalogStatus === "error" ? <ErrorState message={catalogError} onRetry={loadProducts} /> : <Pages.Detail product={selectedProduct} wishlistIds={wishlistIds} onToggleWishlist={toggleWishlist} onAdd={addToCart} />}<Pages.Footer /></section>}
 
       {page === "search" && <section className="catalog-section"><Pages.Search query={query} setQuery={setQuery} products={products} loading={catalogStatus === "loading"} error={catalogError} retry={loadProducts} onOpen={openProduct} wishlistIds={wishlistIds} onToggleWishlist={toggleWishlist} /><Pages.Footer /></section>}
 
-      {page === "cart" && <section className="catalog-section"><Pages.Heading eyebrow="RINGKASAN BELANJA" title="Keranjang." description="Periksa pilihan produk dan jumlah sebelum melanjutkan." /><Pages.Cart lines={cartLines} count={cartCount} subtotal={subtotal} onQuantity={updateQuantity} onRemove={removeFromCart} onShop={() => showPage("products")} /><Pages.Footer /></section>}
+      {page === "cart" && <section className="catalog-section"><Pages.Heading eyebrow="RINGKASAN BELANJA" title="Keranjang." description="Periksa pilihan produk dan jumlah sebelum melanjutkan." />{catalogStatus === "loading" ? <LoadingState /> : catalogStatus === "error" ? <ErrorState message={catalogError} onRetry={loadProducts} /> : <Pages.Cart lines={cartLines} count={cartCount} subtotal={subtotal} onQuantity={updateQuantity} onRemove={removeFromCart} onShop={() => showPage("products")} />}<Pages.Footer /></section>}
 
-      {page === "checkout" && <section className="catalog-section"><Pages.Heading eyebrow="INFORMASI PENERIMA" title="Checkout." description="Isi data penerima untuk membuat draft pesanan lokal." /><Pages.Checkout customer={customer} setCustomer={setCustomer} lines={cartLines} subtotal={subtotal} onSubmit={submitCheckout} onBack={() => showPage("cart")} /><Pages.Footer /></section>}
+      {page === "checkout" && <section className="catalog-section"><Pages.Heading eyebrow="INFORMASI PENERIMA" title="Checkout." description="Isi data penerima untuk membuat draft pesanan lokal." />{catalogStatus === "loading" ? <LoadingState /> : catalogStatus === "error" ? <ErrorState message={catalogError} onRetry={loadProducts} /> : <Pages.Checkout customer={customer} setCustomer={setCustomer} lines={cartLines} subtotal={subtotal} onSubmit={submitCheckout} onBack={() => showPage("cart")} />}<Pages.Footer /></section>}
 
       {page === "orderSuccess" && <section className="catalog-section"><Pages.OrderSuccess order={activeOrder} onTrack={() => showPage("orderTracking", { order: activeOrderId })} onShop={() => showPage("products")} /><Pages.Footer /></section>}
 
