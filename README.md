@@ -4,11 +4,11 @@ Responsive storefront built with React 18, TypeScript, Vite, Storefront UI React
 
 ## Technology
 
-- React / ReactDOM 18.3.1
+- React / ReactDOM 19.0.0
 - TypeScript 5.7
 - Vite 6
 - `@storefront-ui/react` 4.0.3
-- Tailwind CSS 3.4 with Storefront UI Tailwind preset
+- Tailwind CSS 4.1 with Storefront UI Tailwind configuration
 - npm
 - Supabase Edge Function for public catalog reads
 
@@ -46,7 +46,7 @@ The response contract remains `success: true`, `data: Product[]`, and optional `
 
 ## Styling
 
-Storefront UI components and Tailwind utilities are the primary styling system. `src/styles/globals.css` contains Tailwind layers and minimal base/accessibility rules. The former root `style.css` has been removed. ASRI tokens are configured in `tailwind.config.cjs`.
+Storefront UI components and Tailwind 4 utilities are the primary styling system. `src/styles/globals.css` contains Tailwind layers and minimal base/accessibility rules. The former root `style.css` has been removed. ASRI tokens are configured in `tailwind.config.cjs`.
 
 ## Verification
 
