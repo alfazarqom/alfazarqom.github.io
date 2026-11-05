@@ -3,7 +3,7 @@
   "meta": {
     "name": "Asri Collection App Structure",
     "artifact": "structure.json",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "status": "current",
     "purpose": "Application architecture and UI composition blueprint",
     "source_of_truth": true,
@@ -55,7 +55,7 @@
       "Separate page content, reusable UI patterns, data access, and styling responsibilities.",
       "Render Divoom product data from the Supabase get-divoom-products Edge Function; do not add demo product fallbacks.",
       "Treat this file as an architecture reference, not as a claim that conceptual components already exist as separate source files.",
-      "The application is mobile-only and supports viewport widths from 320px through 767px."
+      "Support responsive Mobile (320–767px), Tablet (768–1023px), and Desktop (1024px and above) layouts for Header, Home, and Products."
     ]
   },
   "app": {
@@ -75,6 +75,7 @@
                 "children": [
                   "BrandLockup",
                   "MainNavigation",
+                  "HeaderSearch",
                   "SearchButton",
                   "WishlistButton",
                   "CartButton"
@@ -206,7 +207,12 @@
         "HeroSection",
         "IntroStrip",
         "FeaturedProductsSection"
-      ]
+      ],
+      "responsive": {
+        "mobile": "single-column hero; vertical intro strip; 2-column featured products",
+        "tablet": "two-column hero; horizontal intro strip; 3-column featured products",
+        "desktop": "two-column editorial hero; horizontal intro strip; 4-column featured products"
+      }
     },
     "Products": {
       "implemented": true,
@@ -219,7 +225,12 @@
       "features": [
         "ProductSearch",
         "ProductCount"
-      ]
+      ],
+      "responsive": {
+        "mobile": "stacked heading and full-width search; 2-column product grid",
+        "tablet": "horizontal toolbar; 3-column product grid",
+        "desktop": "horizontal toolbar; 4-column product grid"
+      }
     },
     "ProductDetail": {
       "implemented": true,
@@ -312,7 +323,7 @@
     "ProductSearch": {
       "implemented": true,
       "source": "App.jsx",
-      "behavior_source": "App.jsx"
+      "behavior": "Shared controlled search field used in Header and Products toolbar."
     },
     "ProductGrid": {
       "implemented": true,
@@ -402,6 +413,11 @@
         "Product image gallery",
         "Availability and price display"
       ]
+    },
+    "HeaderSearch": {
+      "implemented": true,
+      "source": "App.jsx",
+      "behavior": "Submits the current catalog query and opens Products."
     }
   },
   "data": {
@@ -504,5 +520,75 @@
       "Toast"
     ],
     "placement": "Outside AppShell"
+  },
+  "navigation_policy": {
+    "mobile_only": false,
+    "responsive_scope": [
+      "Header",
+      "Home",
+      "Products"
+    ],
+    "breakpoints": {
+      "mobile": {
+        "min_width_px": 320,
+        "max_width_px": 767,
+        "header_height_px": 64,
+        "page_gutter_px": 20,
+        "product_columns": 2,
+        "hero_columns": 1,
+        "bottom_navigation": "visible"
+      },
+      "tablet": {
+        "min_width_px": 768,
+        "max_width_px": 1023,
+        "header_height_px": 72,
+        "page_gutter_px": 32,
+        "product_columns": 3,
+        "hero_columns": 2,
+        "bottom_navigation": "hidden"
+      },
+      "desktop": {
+        "min_width_px": 1024,
+        "max_width_px": null,
+        "header_height_px": 76,
+        "page_gutter": "clamp(32px, 6vw, 84px)",
+        "product_columns": 4,
+        "hero_columns": 2,
+        "bottom_navigation": "hidden"
+      }
+    },
+    "Header": {
+      "mobile": "BrandLockup left; Search, Wishlist, and Cart actions right; MainNavigation and inline HeaderSearch hidden.",
+      "tablet": "BrandLockup and left-aligned MainNavigation; compact inline HeaderSearch; Wishlist and Cart actions right.",
+      "desktop": "BrandLockup and left-aligned MainNavigation; inline HeaderSearch; Wishlist and Cart actions right."
+    },
+    "BottomNavigation": {
+      "pages": [
+        "Home",
+        "Products",
+        "Profile"
+      ],
+      "visible_at": "Mobile only",
+      "mutually_exclusive_with": "BottomActionBar"
+    },
+    "BottomActionBar": {
+      "pages": [
+        "ProductDetail",
+        "Search",
+        "Cart",
+        "Checkout",
+        "OrderSuccess",
+        "OrderTracking",
+        "Wishlist",
+        "Contact"
+      ],
+      "mutually_exclusive_with": "BottomNavigation"
+    },
+    "footer": "Footer is rendered inside each page.",
+    "order": [
+      "Header",
+      "Main",
+      "active bottom navigation component"
+    ]
   }
 }
