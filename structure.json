@@ -19,8 +19,8 @@
   },
   "architecture": {
     "pattern": "single-page static application",
-    "runtime": "React 18 UMD and ReactDOM 18 UMD loaded from CDN; Babel Standalone compiles JSX in the browser; native CSS",
-    "framework": "React 18 (CDN UMD)",
+    "runtime": "React 19 npm packages, TypeScript, Vite, Storefront UI React, and Tailwind CSS 4",
+    "framework": "React 19 (npm package)",
     "language": [
       "HTML5",
       "JSX",
@@ -293,70 +293,70 @@
   "components": {
     "Header": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "BrandLockup": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "MainNavigation": {
       "implemented": true,
-      "source": "App.jsx",
-      "behavior_source": "App.jsx"
+      "source": "src/App.tsx",
+      "behavior_source": "src/App.tsx"
     },
     "HeroSection": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "IntroStrip": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "FeaturedProductsSection": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "CatalogToolbar": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "ProductSearch": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "behavior": "Shared controlled search field used in Header and Products toolbar."
     },
     "ProductGrid": {
       "implemented": true,
-      "source": "App.jsx",
-      "style_source": "style.css"
+      "source": "src/App.tsx",
+      "style_source": "src/styles/globals.css"
     },
     "ProductCard": {
       "implemented": true,
-      "source": "App.jsx",
-      "style_source": "style.css",
+      "source": "src/App.tsx",
+      "style_source": "src/styles/globals.css",
       "behavior": "Navigates to /products/{item_group_id}; does not open ProductQuickView."
     },
     "LoadingState": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "initial_fallback_source": "index.html"
     },
     "ErrorState": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "EmptyState": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "Footer": {
       "implemented": true,
-      "source": "App.jsx"
+      "source": "src/App.tsx"
     },
     "BottomNavigation": {
       "implemented": true,
-      "source": "App.jsx",
-      "style_source": "style.css",
+      "source": "src/App.tsx",
+      "style_source": "src/styles/globals.css",
       "pages": [
         "Home",
         "Products",
@@ -365,8 +365,8 @@
     },
     "BottomActionBar": {
       "implemented": true,
-      "source": "App.jsx",
-      "style_source": "style.css",
+      "source": "src/App.tsx",
+      "style_source": "src/styles/globals.css",
       "pages": [
         "ProductDetail",
         "Search",
@@ -380,33 +380,33 @@
     },
     "PageFooter": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "placement": "Inside each page"
     },
     "ProductQuickView": {
       "implemented": false,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "status": "retained as unused legacy component; product cards now navigate to ProductDetailPage"
     },
     "SearchButton": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "behavior": "Navigates to the Search placeholder route"
     },
     "WishlistButton": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "behavior": "Navigates to the Wishlist placeholder route"
     },
     "CartButton": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "behavior": "Navigates to the Cart placeholder route"
     },
     "ProductDetailPage": {
       "implemented": true,
-      "source": "App.jsx",
-      "style_source": "style.css",
+      "source": "src/App.tsx",
+      "style_source": "src/styles/globals.css",
       "responsibilities": [
         "Product group detail",
         "Variant selection",
@@ -416,7 +416,7 @@
     },
     "HeaderSearch": {
       "implemented": true,
-      "source": "App.jsx",
+      "source": "src/App.tsx",
       "behavior": "Submits the current catalog query and opens Products."
     }
   },
@@ -426,7 +426,7 @@
     "endpoint": "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products",
     "method": "GET",
     "client": "browser fetch()",
-    "service_source": "App.jsx",
+    "service_source": "src/App.tsx",
     "expected_response": {
       "success": "boolean",
       "data": "array of Divoom product objects",
@@ -501,7 +501,7 @@
     "BottomActionBar is exclusive to ProductDetail, Search, Cart, Checkout, OrderSuccess, OrderTracking, Wishlist, and Contact.",
     "Do not represent placeholder routes as completed commerce features.",
     "ProductCard navigates to /products/{item_group_id}; ProductQuickView is not the product-card navigation target.",
-    "Use React npm packages, Vite, TypeScript, and Storefront UI React; do not restore CDN runtime or Babel Standalone.",
+    "Use React npm packages, Vite, TypeScript, and Storefront UI React; do not restore CDN runtime or Vite TypeScript build.",
     "Use Tailwind utility classes and Storefront UI preset; avoid a bespoke global stylesheet.",
     "ProductCard navigates to /products/{item_group_id}; item_group_id is the product group identifier.",
     "Do not modify the Supabase Edge Function, response contract, database, or backend behavior."
@@ -589,9 +589,9 @@
   "technology": {
     "frontend": "React 19.0.0",
     "language": "TypeScript",
-    "bundler": "Vite 6",
+    "bundler": "Vite 6.4.2",
     "ui_library": "@storefront-ui/react 4.0.3",
-    "styling": "Tailwind CSS 4.1 + Storefront UI React Tailwind configuration",
+    "styling": "Tailwind CSS 4.1.14 + Storefront UI Tailwind configuration",
     "package_manager": "npm",
     "hosting_target": "GitHub Pages static output (dist)"
   }
