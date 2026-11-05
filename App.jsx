@@ -302,8 +302,8 @@ function ProductDetailPage({ products, itemGroupId, status, error, onRetry, onNa
     setSelectedId(variants[0]?.id || "");
   }, [itemGroupId, products]);
 
-  if (status === "loading") return <LoadingState />;
-  if (status === "error") return <ErrorState message={error} onRetry={onRetry} />;
+  if (status === "loading") return <section className="product-detail-page"><LoadingState /><PageFooter /></section>;
+  if (status === "error") return <section className="product-detail-page"><ErrorState message={error} onRetry={onRetry} /><PageFooter /></section>;
   if (!variants.length) {
     return (
       <section className="product-detail-page">
