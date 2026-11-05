@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#fbfbf8">
   <meta name="description" content="Asri Collection — curated fashion and accessories.">
   <title>Asri Collection</title>
-  <base href="/">
   <script>
     (function restoreGitHubPagesRoute() {
       const params = new URLSearchParams(window.location.search);
@@ -19,22 +18,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
-
-  <!-- React runtime: browser-loaded, no npm or build step. -->
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
-  <!-- Babel transforms JSX in the browser. -->
-  <script src="https://unpkg.com/@babel/standalone@7.26.10/babel.min.js"></script>
 </head>
 <body>
   <div id="root">
-    <main class="loading-state" aria-live="polite">
-      <span class="spinner"></span>
-      Memuat Asri Collection...
-    </main>
+    <main class="min-h-screen p-8 text-center text-sm text-gray-500" aria-live="polite">Memuat Asri Collection...</main>
   </div>
-
-  <script type="text/babel" data-presets="env,react" src="./App.jsx"></script>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
