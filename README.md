@@ -1,6 +1,6 @@
 # Asri Collection — React, Vite & Storefront UI
 
-Responsive storefront built with React 18, TypeScript, Vite, Storefront UI React, and Tailwind CSS. Responsive breakpoints: Mobile (320–767px), Tablet (768–1023px), Desktop (1024px+).
+Responsive storefront built with React 19, TypeScript, Vite, Storefront UI React, and Tailwind CSS. Responsive breakpoints: Mobile (320–767px), Tablet (768–1023px), Desktop (1024px+).
 
 ## Technology
 
@@ -46,7 +46,7 @@ The response contract remains `success: true`, `data: Product[]`, and optional `
 
 ## Styling
 
-Storefront UI components and Tailwind 4 utilities are the primary styling system. `src/styles/globals.css` contains Tailwind layers and minimal base/accessibility rules. The former root `style.css` has been removed. ASRI tokens are configured in `tailwind.config.cjs`.
+Storefront UI components and Tailwind 4 utilities are the primary styling system. `src/styles/globals.css` contains Tailwind layers and minimal base/accessibility rules. The former root `style.css` has been removed. ASRI tokens are configured with Tailwind CSS v4 `@theme` declarations in `src/styles/globals.css`.
 
 ## Verification
 
