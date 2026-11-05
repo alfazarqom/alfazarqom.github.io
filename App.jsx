@@ -374,13 +374,11 @@ function App() {
           </button>
         </nav>
 
-        <button
-          className="header-cta"
-          type="button"
-          onClick={() => showPage("products")}
-        >
-          Jelajahi <span aria-hidden="true">↗</span>
-        </button>
+        <div className="header-utility-actions" aria-label="Aksi cepat">
+          <button className="header-icon-button" type="button" aria-label="Cari" onClick={() => showPage("search")}>⌕</button>
+          <button className="header-icon-button" type="button" aria-label="Wishlist" onClick={() => showPage("wishlist")}>♡</button>
+          <button className="header-icon-button" type="button" aria-label="Keranjang" onClick={() => showPage("cart")}>♧</button>
+        </div>
       </header>
 
       <main className="main-content">
