@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mengarahkan ke Asri Collection</title>
+  <script>
+    (function redirectGitHubPagesRoute() {
+      const requestedPath = window.location.pathname + window.location.search + window.location.hash;
+      const destination = "/?p=" + encodeURIComponent(requestedPath);
+      window.location.replace(destination);
+    })();
+  </script>
+</head>
+<body>
+  <p>Mengarahkan ke halaman yang diminta...</p>
+  <noscript>
+    JavaScript diperlukan untuk membuka halaman produk. <a href="/">Kembali ke beranda</a>.
+  </noscript>
+</body>
+</html>
