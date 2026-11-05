@@ -1,4 +1,4 @@
-name: Frontend Build
+name: Frontend Build and Browser Tests
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,3 +19,6 @@ jobs:
           node-version: 22
       - run: npm install
       - run: npm run build
+      - run: test -f dist/404.html
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
