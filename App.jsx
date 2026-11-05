@@ -2,6 +2,21 @@ const { useEffect, useMemo, useRef, useState } = React;
 
 const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products";
 
+const ALLOWED_PAGES = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
+
+function resolveLocation() {
+  const pathname = decodeURIComponent(window.location.pathname).replace(/\\/+$/, "") || "/";
+  const productMatch = pathname.match(/^\\/products\\/([a-z0-9]+)$/i);
+  if (productMatch) return { page: "productDetail", itemGroupId: productMatch[1] };
+
+  const requestedPage = window.location.hash.replace("#", "") || "home";
+  return {
+    page: ALLOWED_PAGES.includes(requestedPage) ? requestedPage : "home",
+    itemGroupId: null
+  };
+}
+
+
 function formatPrice(amount, currency = "IDR") {
   if (amount === null || amount === undefined || amount === "") return "Harga belum tersedia";
   try {
@@ -278,6 +293,109 @@ function BottomActionBar({ page, onNavigate }) {
   );
 }
 
+
+function ProductDetailPage({ products, itemGroupId, status, error, onRetry, onNavigate }) {
+  const variants = products.filter((product) => product.item_group_id === itemGroupId);
+  const [selectedId, setSelectedId] = useState("");
+
+  useEffect(() => {
+    setSelectedId(variants[0]?.id || "");
+  }, [itemGroupId, products]);
+
+  if (status === "loading") return <LoadingState />;
+  if (status === "error") return <ErrorState message={error} onRetry={onRetry} />;
+  if (!variants.length) {
+    return (
+      <section className="product-detail-page">
+        <div className="empty-state">
+          <span className="empty-icon">?</span>
+          <h1>Produk tidak ditemukan</h1>
+          <p>Produk dengan kode grup <strong>{itemGroupId}</strong> tidak tersedia di katalog.</p>
+          <button className="button button-dark" type="button" onClick={() => onNavigate("products")}>Kembali ke produk</button>
+        </div>
+        <PageFooter />
+      </section>
+    );
+  }
+
+  const selected = variants.find((product) => product.id === selectedId) || variants[0];
+  const images = productImages(selected);
+  const safeRichDescription = sanitizeRichText(selected.rich_text_description);
+  const available = String(selected.availability || "").toLowerCase() === "in stock";
+  const variantLabel = (product) => product.color || product.title || product.id;
+
+  return (
+    <section className="product-detail-page">
+      <button className="detail-breadcrumb" type="button" onClick={() => onNavigate("products")}>← Kembali ke produk</button>
+      <div className="product-detail-layout">
+        <div className="product-detail-gallery">
+          {images.length ? (
+            <>
+              <img className="product-detail-main-image" src={images[0]} alt={selected.title || "Produk"} />
+              {images.length > 1 && (
+                <div className="product-detail-thumbnails">
+                  {images.slice(1).map((src, index) => (
+                    <img key={src} src={src} alt={(selected.title || "Produk") + " - gambar " + (index + 2)} loading="lazy" />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : <span className="image-placeholder">DIVOOM</span>}
+        </div>
+        <div className="product-detail-copy">
+          <p className="eyebrow">{selected.brand || selected.product_type || "DIVOOM"}</p>
+          <h1>{selected.title || "Produk"}</h1>
+          <p className="product-detail-price">{formatPrice(displayPrice(selected), "IDR")}</p>
+          <p className={`stock-status ${available ? "is-available" : ""}`}>
+            <span className="status-dot" />
+            {available ? "Tersedia" : String(selected.availability || "").toLowerCase() === "out of stock" ? "Stok habis" : "Status tidak diketahui"}
+          </p>
+
+          {variants.length > 1 && (
+            <div className="variant-selector">
+              <span className="variant-selector-label">Pilih varian ({variants.length})</span>
+              <div className="variant-options">
+                {variants.map((variant) => (
+                  <button
+                    key={variant.id}
+                    type="button"
+                    className={`variant-option ${selected.id === variant.id ? "is-selected" : ""}`}
+                    aria-pressed={selected.id === variant.id}
+                    onClick={() => setSelectedId(variant.id)}
+                  >
+                    {variantLabel(variant)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {safeRichDescription ? (
+            <div className="detail-description" dangerouslySetInnerHTML={{ __html: safeRichDescription }} />
+          ) : selected.description ? (
+            <p className="detail-description">{selected.description}</p>
+          ) : null}
+
+          <dl className="detail-facts">
+            {[
+              ["Grup produk", selected.item_group_id],
+              ["Kategori", selected.product_type],
+              ["Warna", selected.color],
+              ["Kondisi", selected.condition],
+              ["Material", selected.material],
+              ["Ukuran", selected.size]
+            ].filter(([, value]) => value).map(([label, value]) => (
+              <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+            ))}
+          </dl>
+          <p className="detail-note">Informasi produk dan varian ditampilkan dari katalog Supabase.</p>
+        </div>
+      </div>
+      <PageFooter />
+    </section>
+  );
+}
+
 function PagePlaceholder({ title }) {
   return (
     <section className="placeholder-page">
@@ -290,14 +408,13 @@ function PagePlaceholder({ title }) {
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(
-    window.location.hash.replace("#", "") || "home"
-  );
+  const [initialLocation] = useState(resolveLocation);
+  const [page, setPage] = useState(initialLocation.page);
+  const [itemGroupId, setItemGroupId] = useState(initialLocation.itemGroupId);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
   const [total, setTotal] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -343,37 +460,55 @@ function App() {
     }
   }
 
+  function scrollToTop() {
+    document.querySelector(".main-content")?.scrollTo({ top: 0, behavior: "instant" });
+  }
+
   function showPage(nextPage) {
-    const allowedPages = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
-    const normalizedPage = allowedPages.includes(nextPage) ? nextPage : "home";
+    const normalizedPage = ALLOWED_PAGES.includes(nextPage) ? nextPage : "home";
     setPage(normalizedPage);
-
-    if (window.location.hash !== `#${normalizedPage}`) {
-      window.history.replaceState(null, "", `#${normalizedPage}`);
+    setItemGroupId(null);
+    const nextUrl = normalizedPage === "home" ? "/#home" : `/#${normalizedPage}`;
+    if (window.location.pathname + window.location.hash !== nextUrl) {
+      window.history.pushState({ page: normalizedPage }, "", nextUrl);
     }
+    scrollToTop();
+  }
 
-    document.querySelector(".main-content")?.scrollTo({
-      top: 0,
-      behavior: "instant"
-    });
+  function navigateToProduct(groupId) {
+    const normalizedGroupId = String(groupId || "");
+    if (!/^[a-z0-9]+$/i.test(normalizedGroupId)) return;
+    setPage("productDetail");
+    setItemGroupId(normalizedGroupId);
+    window.history.pushState(
+      { page: "productDetail", itemGroupId: normalizedGroupId },
+      "",
+      `/products/${encodeURIComponent(normalizedGroupId)}`
+    );
+    scrollToTop();
   }
 
   useEffect(() => {
     loadProducts();
 
-    const handleHashChange = () => {
-      const requestedPage = window.location.hash.replace("#", "") || "home";
-      const allowedPages = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"];
-      setPage(allowedPages.includes(requestedPage) ? requestedPage : "home");
+    const handleLocationChange = () => {
+      const location = resolveLocation();
+      setPage(location.page);
+      setItemGroupId(location.itemGroupId);
+      scrollToTop();
     };
 
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    window.addEventListener("popstate", handleLocationChange);
+    window.addEventListener("hashchange", handleLocationChange);
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange);
+      window.removeEventListener("hashchange", handleLocationChange);
+    };
   }, []);
 
   useEffect(() => {
-    document.title = "Asri Collection";
-  }, []);
+    document.title = page === "productDetail" ? "Detail Produk | Asri Collection" : "Asri Collection";
+  }, [page, itemGroupId]);
 
   const featuredProducts = products.slice(0, 4);
 
@@ -473,7 +608,7 @@ function App() {
                 </div>
                 {status === "loading" ? <LoadingState /> :
                   status === "error" ? <ErrorState message={error} onRetry={loadProducts} /> :
-                  <ProductGrid products={featuredProducts} onSelect={setSelectedProduct} />}
+                  <ProductGrid products={featuredProducts} onSelect={(product) => navigateToProduct(product.item_group_id)} />}
               </section>
               <PageFooter />
             </section>
@@ -504,16 +639,24 @@ function App() {
               </div>
               {status === "loading" ? <LoadingState /> :
                 status === "error" ? <ErrorState message={error} onRetry={loadProducts} /> :
-                <ProductGrid products={filteredProducts} onSelect={setSelectedProduct} />}
+                <ProductGrid products={filteredProducts} onSelect={(product) => navigateToProduct(product.item_group_id)} />}
               <PageFooter />
             </section>
+          ) : page === "productDetail" ? (
+            <ProductDetailPage
+              products={products}
+              itemGroupId={itemGroupId}
+              status={status}
+              error={error}
+              onRetry={loadProducts}
+              onNavigate={showPage}
+            />
           ) : (
             <section className="catalog-section">
               <PagePlaceholder title={{
-                productDetail: "Detail Produk", search: "Pencarian", cart: "Keranjang",
-                checkout: "Checkout", orderSuccess: "Pesanan Berhasil",
-                orderTracking: "Lacak Pesanan", wishlist: "Wishlist",
-                profile: "Profil", contact: "Kontak"
+                search: "Pencarian", cart: "Keranjang", checkout: "Checkout",
+                orderSuccess: "Pesanan Berhasil", orderTracking: "Lacak Pesanan",
+                wishlist: "Wishlist", profile: "Profil", contact: "Kontak"
               }[page] || "Halaman"} />
               <PageFooter />
             </section>
@@ -527,10 +670,6 @@ function App() {
         <BottomActionBar page={page} onNavigate={showPage} />
       )}
 
-      <ProductQuickView
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
     </div>
   );
 }
