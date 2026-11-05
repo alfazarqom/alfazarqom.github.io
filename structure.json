@@ -373,10 +373,9 @@
       "placement": "Inside each page"
     },
     "ProductQuickView": {
-      "implemented": true,
+      "implemented": false,
       "source": "App.jsx",
-      "rendering": "React-controlled native HTML dialog",
-      "style_source": "style.css"
+      "status": "retained as unused legacy component; product cards now navigate to ProductDetailPage"
     },
     "SearchButton": {
       "implemented": true,
