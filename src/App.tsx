@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { SfButton } from "@storefront-ui/react";
+import { SfButton, SfInput, SfIconSearch } from "@storefront-ui/react";
 
 const PRODUCTS_ENDPOINT = "https://mvwflakurihhakdrlteg.supabase.co/functions/v1/get-divoom-products";
 const ALLOWED_PAGES = ["home", "products", "productDetail", "search", "cart", "checkout", "orderSuccess", "orderTracking", "wishlist", "profile", "contact"] as const;
@@ -85,8 +85,15 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 
 function ProductSearch({ value, onChange, variant = "catalog", onSubmit }: { value: string; onChange: (value: string) => void; variant?: "catalog" | "header"; onSubmit?: () => void }) {
   return <form role="search" aria-label={variant === "header" ? "Pencarian katalog" : "Cari produk"} onSubmit={e => { e.preventDefault(); onSubmit?.(); }} className={variant === "header" ? "flex min-w-0 flex-1 items-center border-b border-asri-line" : "flex w-full items-center gap-2 border border-asri-line bg-white px-3"}>
-    <span aria-hidden="true" className="text-xl text-asri-muted">⌕</span>
-    <input type="search" value={value} onChange={e => onChange(e.target.value)} placeholder="Cari produk..." aria-label="Cari produk" className="h-11 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-asri-muted" />
+    <SfInput
+      type="search"
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder="Cari produk..."
+      aria-label="Cari produk"
+      slotPrefix={<SfIconSearch />}
+      wrapperClassName="min-w-0 flex-1"
+    />
     {variant === "header" && <button type="submit" aria-label="Tampilkan hasil pencarian" className="px-2 text-asri-green">↵</button>}
   </form>;
 }
