@@ -146,11 +146,11 @@ const AsriPages = (() => {
       h(Heading, { eyebrow: "SIMPANANMU", title: "Wishlist.", description: "Produk yang kamu simpan untuk dilihat kembali." }),
       loading ? h("div", { className: "loading-state" }, "Memuat wishlist...") : error ? h("div", { className: "error-state", role: "alert" }, error, h("button", { className: "button button-dark", type: "button", onClick: retry }, "Coba lagi")) : h(ProductGrid, { products, onOpen, wishlistIds, onToggleWishlist }));
   }
-  function Profile({ customer, setCustomer, orderCount, wishlistCount, cartCount, onOrders, onWishlist, onCart }) {
+  function Profile({ customer, setCustomer, orderCount, wishlistCount, cartCount, onOrders, onWishlist, onCart, onSaved }) {
     const update = (key, value) => setCustomer(current => ({ ...current, [key]: value }));
     return h(React.Fragment, null,
       h(Heading, { eyebrow: "AKUN TAMU", title: "Profil.", description: "Profil opsional tersimpan di browser ini. Tidak memerlukan akun." }),
-      h("form", { className: "form-card profile-form", onSubmit: event => { event.preventDefault(); window.dispatchEvent(new CustomEvent("asri:notice", { detail: "Profil lokal disimpan." })); } },
+      h("form", { className: "form-card profile-form", onSubmit: event => { event.preventDefault(); onSaved(); } },
         h(Field, { label: "Nama", required: false, value: customer.name, onChange: value => update("name", value), autoComplete: "name" }),
         h(Field, { label: "Email", type: "email", required: false, value: customer.email, onChange: value => update("email", value), autoComplete: "email" }),
         h(Field, { label: "Nomor telepon", type: "tel", required: false, value: customer.phone, onChange: value => update("phone", value), autoComplete: "tel" }),
