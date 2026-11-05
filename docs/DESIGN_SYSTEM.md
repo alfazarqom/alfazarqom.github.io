@@ -5,14 +5,14 @@
 
 ## Technology baseline
 
-- React 18.3.1 and ReactDOM 18.3.1 via npm.
+- React 19.0.0 and ReactDOM 19.0.0 via npm.
 - TypeScript 5.7.
 - Vite 6 for development and production build.
 - Storefront UI React 4.0.3 with the Storefront UI Tailwind preset.
-- Tailwind CSS 3.4 and PostCSS.
+- Tailwind CSS 4.1 with the Vite plugin.
 - GitHub Pages static hosting target; Vite output is `dist/`.
 
-The documentation site is versioned under Storefront UI V2. The React npm package has its own independent package version; this repository currently pins `@storefront-ui/react@4.0.3`. Confirm dependency installation and peer compatibility with the build before deployment.
+The documentation site is versioned under Storefront UI V2. The React npm package has its own independent package version; this repository pins `@storefront-ui/react@4.0.3`, whose published peer dependency requires React 19 and whose Tailwind configuration requires Tailwind 4.
 
 ## Design principles
 
