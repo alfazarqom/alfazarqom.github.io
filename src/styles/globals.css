@@ -1,6 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@storefront-ui/react/tailwind-config";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-asri-green: #176b45;
+  --color-asri-dark: #104c34;
+  --color-asri-deep: #183e2d;
+  --color-asri-soft: #eaf1eb;
+  --color-asri-paper: #fbfbf8;
+  --color-asri-ink: #171a17;
+  --color-asri-muted: #777d75;
+  --color-asri-line: #e8e9e3;
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Manrope", sans-serif;
+  --font-editorial: Georgia, serif;
+  --container-storefront: 1440px;
+}
 
 @layer base {
   html {
