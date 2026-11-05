@@ -156,6 +156,43 @@ function ProductGrid({ products, onSelect }) {
   );
 }
 
+function ProductSearch({ value, onChange, variant = "catalog", onSubmit }) {
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (onSubmit) onSubmit();
+  }
+
+  return (
+    <form
+      className={`search-field ${variant === "header" ? "header-search" : "catalog-search"}`}
+      role="search"
+      aria-label={variant === "header" ? "Pencarian katalog" : "Cari produk"}
+      onSubmit={handleSubmit}
+    >
+      <span aria-hidden="true">⌕</span>
+      <input
+        type="search"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={variant === "header" ? "Cari produk..." : "Cari produk..."}
+        aria-label="Cari produk"
+      />
+      {variant === "header" && (
+        <button className="header-search-submit" type="submit" aria-label="Tampilkan hasil pencarian">↵</button>
+      )}
+    </form>
+  );
+}
+
+function ProductCount({ status, filteredCount, total }) {
+  let label = `${filteredCount} produk`;
+  if (status === "loading") label = "Memuat produk...";
+  else if (status === "error") label = "Katalog tidak tersedia";
+  else if (total !== null) label = `${filteredCount} dari ${total} produk`;
+
+  return <span className="product-count" aria-live="polite">{label}</span>;
+}
+
 function ProductQuickView({ product, onClose }) {
   const dialogRef = useRef(null);
 
@@ -542,7 +579,7 @@ function App() {
           </button>
           <button
             type="button"
-            className={`nav-button ${page === "products" ? "is-active" : ""}`}
+            className={`nav-button ${page === "products" || page === "productDetail" ? "is-active" : ""}`}
             aria-current={page === "products" ? "page" : undefined}
             onClick={() => showPage("products")}
           >
@@ -550,8 +587,15 @@ function App() {
           </button>
         </nav>
 
+        <ProductSearch
+          value={query}
+          onChange={setQuery}
+          variant="header"
+          onSubmit={() => showPage("products")}
+        />
+
         <div className="header-utility-actions" aria-label="Aksi cepat">
-          <button className="header-icon-button" type="button" aria-label="Cari" onClick={() => showPage("search")}>⌕</button>
+          <button className="header-icon-button mobile-search-trigger" type="button" aria-label="Cari produk" onClick={() => showPage("search")}>⌕</button>
           <button className="header-icon-button" type="button" aria-label="Wishlist" onClick={() => showPage("wishlist")}>♡</button>
           <button className="header-icon-button" type="button" aria-label="Keranjang" onClick={() => showPage("cart")}>♧</button>
         </div>
@@ -620,22 +664,8 @@ function App() {
                 <p>Temukan item pilihan yang menyatukan kualitas, fungsi, dan karakter.</p>
               </div>
               <div className="catalog-toolbar">
-                <span>
-                  {status === "loading" ? "Memuat produk..." :
-                    status === "error" ? "Katalog tidak tersedia" :
-                    total !== null ? `${filteredProducts.length} dari ${total} produk` :
-                    `${filteredProducts.length} produk`}
-                </span>
-                <label className="search-field">
-                  <span aria-hidden="true">⌕</span>
-                  <input
-                    type="search"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Cari produk..."
-                    aria-label="Cari produk"
-                  />
-                </label>
+                <ProductCount status={status} filteredCount={filteredProducts.length} total={total} />
+                <ProductSearch value={query} onChange={setQuery} />
               </div>
               {status === "loading" ? <LoadingState /> :
                 status === "error" ? <ErrorState message={error} onRetry={loadProducts} /> :

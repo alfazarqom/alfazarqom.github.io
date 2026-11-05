@@ -3,8 +3,8 @@
   "meta": {
     "name": "Asri Collection Design System",
     "artifact": "blueprint-design-system.json",
-    "version": "1.0.0",
-    "status": "baseline",
+    "version": "1.1.0",
+    "status": "approved-responsive-v1",
     "platform": "Responsive web storefront",
     "design_direction": "Modern minimal, editorial, premium, mobile-first",
     "source_of_truth": true
@@ -255,10 +255,9 @@
       "reduced_motion": "Respect prefers-reduced-motion."
     },
     "breakpoints": {
-      "mobile": "0-767px",
-      "tablet": "768-1023px",
-      "desktop": "1024-1439px",
-      "wide": "1440px and above"
+      "mobile": "320–767px",
+      "tablet": "768–1023px",
+      "desktop": "1024px and above"
     },
     "z_index": {
       "base": 0,
@@ -296,7 +295,12 @@
         "tablet": 3,
         "desktop": 4
       },
-      "gap": "12px"
+      "gap": "12px",
+      "hero": {
+        "mobile": 1,
+        "tablet": 2,
+        "desktop": 2
+      }
     },
     "safe_area": {
       "top": "env(safe-area-inset-top)",
@@ -307,7 +311,22 @@
       "Keep scroll ownership clear: app shell stays fixed while the main content scrolls.",
       "Use a persistent bottom navigation on mobile only when it is part of the approved app navigation.",
       "Do not stretch mobile layouts unchanged across desktop."
-    ]
+    ],
+    "header": {
+      "height": {
+        "mobile": "64px",
+        "tablet": "72px",
+        "desktop": "76px"
+      },
+      "max_content_width": "1440px",
+      "mobile": "BrandLockup left; Search, Wishlist, Cart right; hide MainNavigation and inline search.",
+      "tablet": "BrandLockup and left-aligned MainNavigation; compact inline search; Wishlist and Cart right.",
+      "desktop": "BrandLockup and left-aligned MainNavigation; inline search; Wishlist and Cart right."
+    },
+    "bottom_navigation": {
+      "visible": "Mobile only (320–767px)",
+      "hidden": "Tablet and Desktop"
+    }
   },
   "navigation": {
     "primary_destinations": [
@@ -322,8 +341,8 @@
       "search"
     ],
     "bottom_navigation": {
-      "mobile": "visible when enabled by the application shell",
-      "desktop": "hidden or replaced by desktop navigation",
+      "mobile": "Visible on Home, Products, and Profile at 320–767px.",
+      "desktop": "Hidden; Header navigation is used for Home and Products.",
       "active_state": "Use clear icon, label, and color treatment"
     }
   },
@@ -661,7 +680,8 @@
       "Use shared components for repeated UI patterns.",
       "Represent loading, empty, error, success, and disabled states explicitly.",
       "Keep page-specific exceptions documented.",
-      "Do not change existing application architecture as a side effect of consuming this blueprint."
+      "Do not change existing application architecture as a side effect of consuming this blueprint.",
+      "Responsive Layout V1 applies tablet and desktop composition to Header, Home, and Products only; other page content remains outside this redesign scope."
     ],
     "quality_checks": [
       "Validate mobile, tablet, and desktop layouts.",
