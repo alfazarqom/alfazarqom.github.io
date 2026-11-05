@@ -230,7 +230,7 @@
         "md": "20px",
         "lg": "24px"
       },
-      "content_max_width": "1440px"
+      "content_max_width": "767px"
     },
     "radius": {
       "none": "0px",
@@ -255,10 +255,10 @@
       "reduced_motion": "Respect prefers-reduced-motion."
     },
     "breakpoints": {
-      "mobile": "0-767px",
-      "tablet": "768-1023px",
-      "desktop": "1024-1439px",
-      "wide": "1440px and above"
+      "mobile_only": {
+        "min": "320px",
+        "max": "767px"
+      }
     },
     "z_index": {
       "base": 0,
@@ -280,21 +280,19 @@
         "BottomNavigation"
       ],
       "direction": "column",
-      "viewport_height": "100dvh",
+      "viewport_height": "100%",
       "root_overflow": "hidden",
       "main_region": "flex: 1; min-height: 0; overflow-y: auto"
     },
     "page_container": {
       "width": "100%",
-      "max_width": "1440px",
+      "max_width": "767px",
       "centered": true,
       "horizontal_padding": "foundations.spacing.page_gutter"
     },
     "responsive_grid": {
       "products": {
-        "mobile": 2,
-        "tablet": 3,
-        "desktop": 4
+        "mobile": 2
       },
       "gap": "12px"
     },
@@ -664,12 +662,12 @@
       "Do not change existing application architecture as a side effect of consuming this blueprint."
     ],
     "quality_checks": [
-      "Validate mobile, tablet, and desktop layouts.",
       "Check keyboard navigation and focus visibility.",
       "Check long product names and missing images.",
       "Check all component states.",
       "Check safe-area behavior.",
-      "Check contrast and touch target sizes."
+      "Check contrast and touch target sizes.",
+      "Validate mobile-only layouts at 320px, 390px, and 767px."
     ]
   },
   "governance": {
@@ -684,6 +682,7 @@
       "patch": "Clarifications and non-breaking corrections",
       "minor": "Additive tokens, components, variants, or patterns",
       "major": "Breaking changes to foundations, component contracts, or layout architecture"
-    }
+    },
+    "mobile_only_policy": "The storefront supports 320–767px viewports only. Do not add tablet or desktop breakpoints or layouts."
   }
 }
