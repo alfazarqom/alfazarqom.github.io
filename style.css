@@ -750,3 +750,73 @@ body {
   .main-navigation { gap: 8px; }
   .header-icon-button { width: 28px; }
 }
+
+
+/* Product detail route: grouped variants are rendered as one product page. */
+.product-detail-page { padding: 28px 0 10px; }
+.detail-breadcrumb {
+  margin: 0 0 20px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(22px, 4vw, 48px);
+  align-items: start;
+}
+.product-detail-gallery { min-width: 0; }
+.product-detail-main-image {
+  display: block;
+  width: 100%;
+  max-height: 620px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background: #f0f0eb;
+}
+.product-detail-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.product-detail-thumbnails img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #f0f0eb;
+}
+.product-detail-copy { min-width: 0; padding: 10px 0; }
+.product-detail-copy h1 {
+  margin: 12px 0;
+  font-family: Manrope, sans-serif;
+  font-size: clamp(24px, 5vw, 36px);
+  line-height: 1.2;
+}
+.product-detail-price { margin: 0 0 12px; font-size: 19px; font-weight: 700; }
+.variant-selector { margin: 24px 0; padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.variant-selector-label { display: block; margin-bottom: 12px; font-size: 11px; font-weight: 700; }
+.variant-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.variant-option {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 10px;
+  cursor: pointer;
+}
+.variant-option.is-selected { border-color: var(--green); background: #edf3ed; color: var(--green-dark); font-weight: 700; }
+.product-detail-copy .detail-facts { margin-top: 24px; }
+@media (max-width: 600px) {
+  .product-detail-page { padding-top: 18px; }
+  .product-detail-layout { grid-template-columns: 1fr; gap: 20px; }
+  .product-detail-main-image { max-height: 420px; }
+  .product-detail-copy { padding: 0 0 8px; }
+}
