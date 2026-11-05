@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@storefront-ui/react/tailwind-config";
+@source "../../node_modules/@storefront-ui/react";
 @plugin "@tailwindcss/typography";
 
 @theme {
