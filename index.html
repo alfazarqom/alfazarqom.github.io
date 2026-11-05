@@ -7,6 +7,15 @@
   <meta name="description" content="Asri Collection — curated fashion and accessories.">
   <title>Asri Collection</title>
   <base href="/">
+  <script>
+    (function restoreGitHubPagesRoute() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedPath = params.get("p");
+      if (requestedPath && requestedPath.startsWith("/") && !requestedPath.startsWith("//")) {
+        window.history.replaceState(null, "", requestedPath);
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
