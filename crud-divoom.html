@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f7f8f6">
-<meta name="description" content="Divoom Product Manager — kelola produk dan varian.">
+<meta name="description" content="Divoom Product Manager — kelola katalog, gambar, dan varian produk.">
+<meta name="color-scheme" content="light">
 <title>Divoom Product Manager</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -17,32 +19,32 @@
 @media(max-width:360px){.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.product-info{padding:8px}.stat-value{font-size:19px}}
 </style>
 </head>
-<body>
-<div class="app">
-<header class="topbar">
+<body class="bg-slate-50 text-slate-900 antialiased">
+<div class="app min-h-screen">
+<header class="topbar flex items-center justify-between bg-white/95 border-b border-slate-200 sticky top-0 z-20">
   <div class="brand"><div class="brand-mark">D</div><div><strong>Divoom Manager</strong><small>PRODUCT WORKSPACE</small></div></div>
   <div class="top-actions"><button class="icon-btn" id="refreshBtn" aria-label="Muat ulang">↻</button></div>
 </header>
-<div class="layout">
-<aside class="sidebar">
+<div class="layout mx-auto w-full max-w-screen-2xl">
+<aside class="sidebar bg-white/70">
   <div class="nav-label">Workspace</div>
   <button class="nav-btn active" data-page="dashboard"><span>▦</span>Dasbor</button>
   <button class="nav-btn" data-page="products"><span>▤</span>Produk</button>
   <div class="nav-label" style="margin-top:25px">Koneksi</div>
   <div style="padding:0 12px;color:#879188;font-size:10px;line-height:1.8">Supabase Edge Function<br><b style="color:#16734a">crud-divoom · v2</b></div>
 </aside>
-<main id="main">
+<main id="main" class="min-w-0">
   <div class="loading"><span class="spinner"></span> Menghubungkan ke katalog produk…</div>
 </main>
 </div>
-<nav class="mobile-nav">
+<nav class="mobile-nav bg-white/95 border-t border-slate-200">
   <button class="active" data-page="dashboard"><span>▦</span>Dasbor</button>
   <button data-page="products"><span>▤</span>Produk</button>
   <button id="mobileAdd"><span>＋</span>Tambah</button>
 </nav>
 </div>
-<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true"><section class="dialog" id="dialog"></section></div>
-<div class="toast" id="toast" role="status"></div>
+<div class="overlay backdrop-blur-sm" id="modalOverlay" role="dialog" aria-modal="true"><section class="dialog" id="dialog"></section></div>
+<div class="toast shadow-xl" id="toast" role="status"></div>
 <script>
 (() => {
 "use strict";
@@ -63,20 +65,20 @@ function filteredGroups(){let a=groupRecords().filter(g=>{const p=g.first,q=stat
 function navActive(){document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===state.page))}
 function render(){navActive();if(state.page==="dashboard")renderDashboard();else renderProducts()}
 function renderDashboard(){const groups=groupRecords(),variants=state.records.length,available=state.records.filter(isAvailable).length;$("#main").innerHTML=`
-<div class="page-head"><div><p class="eyebrow">Ringkasan katalog</p><h1>Dasbor</h1><p class="sub">Pantau produk dan varian Divoom dalam satu tempat.</p></div><button class="btn primary" id="addProduct">＋ Tambah produk</button></div>
-<section class="stats">
-<div class="stat"><div class="stat-top">Kelompok produk <span class="stat-icon">▦</span></div><div class="stat-value">${groups.length}</div><div class="stat-note">Item Group ID unik</div></div>
+<div class="page-head"><div><p class="eyebrow">Ringkasan katalog</p><h1>Dasbor</h1><p class="sub">Pantau produk dan varian Divoom dalam satu tempat.</p></div><button class="btn primary shadow-sm transition hover:brightness-95 active:scale-[.98]" id="addProduct">＋ Tambah produk</button></div>
+<section class="stats grid gap-3">
+<div class="stat rounded-2xl border border-slate-200 bg-white shadow-sm"><div class="stat-top">Kelompok produk <span class="stat-icon">▦</span></div><div class="stat-value">${groups.length}</div><div class="stat-note">Item Group ID unik</div></div>
 <div class="stat"><div class="stat-top">Total record <span class="stat-icon">▤</span></div><div class="stat-value">${variants}</div><div class="stat-note">Data produk di database</div></div>
 <div class="stat"><div class="stat-top">Record tersedia <span class="stat-icon">◉</span></div><div class="stat-value">${available}</div><div class="stat-note">Berdasarkan nilai availability aktual</div></div>
 <div class="stat"><div class="stat-top">Jumlah varian <span class="stat-icon">◇</span></div><div class="stat-value">${variants-groups.length}</div><div class="stat-note">Record di luar satu record per grup</div></div>
 </section>
 <div class="page-head" style="margin:8px 0 14px"><div><h1 style="font-size:18px;letter-spacing:-.4px">Kelompok produk</h1><p class="sub">Produk yang terakhir dimuat dari backend.</p></div><button class="btn" id="seeAll">Lihat semua →</button></div>
-<section class="panel"><div class="product-grid">${groups.length?groups.slice(0,6).map(cardHTML).join(""):'<div class="empty" style="grid-column:1/-1"><b>Belum ada produk</b>Tambahkan produk pertama untuk memulai.</div>'}</div></section>`;
+<section class="panel rounded-2xl border border-slate-200 bg-white shadow-sm"><div class="product-grid">${groups.length?groups.slice(0,6).map(cardHTML).join(""):'<div class="empty" style="grid-column:1/-1"><b>Belum ada produk</b>Tambahkan produk pertama untuk memulai.</div>'}</div></section>`;
 $("#addProduct").onclick=()=>openProductForm();$("#seeAll").onclick=()=>setPage("products");bindCards()}
-function cardHTML(g){const p=g.first;return `<article class="product-card" data-group="${esc(g.key)}"><div class="product-image">${p.image_link?'<img loading="lazy" src="'+esc(p.image_link)+'" alt="'+esc(p.title)+'" onerror="this.remove()">':'<span class="placeholder">D</span>'}<span class="pill">${g.items.length} varian</span></div><div class="product-info"><div class="group">GROUP · ${esc(g.key||"—")}</div><h3>${esc(p.title||"Tanpa judul")}</h3><div class="price">${groupPrice(g)}</div><div class="variant-count">${esc(p.brand||"Divoom")} · ${g.items.length} record</div></div></article>`}
+function cardHTML(g){const p=g.first;return `<article class="product-card rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" data-group="${esc(g.key)}"><div class="product-image">${p.image_link?'<img loading="lazy" src="'+esc(p.image_link)+'" alt="'+esc(p.title)+'" onerror="this.remove()">':'<span class="placeholder">D</span>'}<span class="pill">${g.items.length} varian</span></div><div class="product-info"><div class="group">GROUP · ${esc(g.key||"—")}</div><h3>${esc(p.title||"Tanpa judul")}</h3><div class="price">${groupPrice(g)}</div><div class="variant-count">${esc(p.brand||"Divoom")} · ${g.items.length} record</div></div></article>`}
 function renderProducts(){const groups=filteredGroups();const brands=[...new Set(state.records.map(p=>p.brand).filter(Boolean))].sort();const avail=[...new Set(state.records.map(p=>p.availability).filter(Boolean))].sort();$("#main").innerHTML=`
 <div class="page-head"><div><p class="eyebrow">Manajemen katalog</p><h1>Produk</h1><p class="sub">Kelola kelompok produk, detail, dan varian warna atau ukuran.</p></div><button class="btn primary" id="addProduct">＋ Tambah produk</button></div>
-<section class="panel"><div class="toolbar"><div class="search"><input id="searchInput" type="search" placeholder="Cari nama produk, brand, atau group ID…" value="${esc(state.query)}"></div><select id="availabilityFilter"><option value="">Semua status</option>${avail.map(x=>'<option '+(x===state.availability?'selected':'')+' value="'+esc(x)+'">'+esc(x)+'</option>').join("")}</select><select id="brandFilter"><option value="">Semua brand</option>${brands.map(x=>'<option '+(x===state.brand?'selected':'')+' value="'+esc(x)+'">'+esc(x)+'</option>').join("")}</select><select id="sortFilter"><option value="name" ${state.sort==="name"?"selected":""}>Nama A–Z</option><option value="price" ${state.sort==="price"?"selected":""}>Harga terendah</option></select></div><div class="count">${groups.length} kelompok produk · ${state.records.length} record</div><div class="product-grid" id="productGrid">${groups.length?groups.map(cardHTML).join(""):'<div class="empty" style="grid-column:1/-1"><b>Produk tidak ditemukan</b>Coba ubah kata kunci atau filter.</div>'}</div></section>`;
+<section class="panel rounded-2xl border border-slate-200 bg-white shadow-sm"><div class="toolbar flex flex-wrap items-center gap-3"><div class="search"><input id="searchInput" type="search" placeholder="Cari nama produk, brand, atau group ID…" value="${esc(state.query)}"></div><select id="availabilityFilter"><option value="">Semua status</option>${avail.map(x=>'<option '+(x===state.availability?'selected':'')+' value="'+esc(x)+'">'+esc(x)+'</option>').join("")}</select><select id="brandFilter"><option value="">Semua brand</option>${brands.map(x=>'<option '+(x===state.brand?'selected':'')+' value="'+esc(x)+'">'+esc(x)+'</option>').join("")}</select><select id="sortFilter"><option value="name" ${state.sort==="name"?"selected":""}>Nama A–Z</option><option value="price" ${state.sort==="price"?"selected":""}>Harga terendah</option></select></div><div class="count">${groups.length} kelompok produk · ${state.records.length} record</div><div class="product-grid" id="productGrid">${groups.length?groups.map(cardHTML).join(""):'<div class="empty" style="grid-column:1/-1"><b>Produk tidak ditemukan</b>Coba ubah kata kunci atau filter.</div>'}</div></section>`;
 $("#addProduct").onclick=()=>openProductForm();$("#searchInput").oninput=e=>{state.query=e.target.value;const pos=e.target.selectionStart;renderProducts();const el=$("#searchInput");el.focus();el.setSelectionRange(pos,pos)};$("#availabilityFilter").onchange=e=>{state.availability=e.target.value;renderProducts()};$("#brandFilter").onchange=e=>{state.brand=e.target.value;renderProducts()};$("#sortFilter").onchange=e=>{state.sort=e.target.value;renderProducts()};bindCards()}
 function bindCards(){document.querySelectorAll("[data-group]").forEach(el=>el.onclick=()=>openGroup(el.dataset.group))}
 function setPage(page){state.page=page;render()}
