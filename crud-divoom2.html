@@ -34,7 +34,20 @@
     h1 { margin: 0; font-size: 18px; }
     .subtitle { margin: 4px 0 0; color: #748078; font-size: 12px; }
     main { padding: 16px; }
-    .toolbar { display: grid; gap: 9px; margin: 16px 0; }
+    .toolbar { display: grid; gap: 9px; margin: 16px 0 12px; }
+    .category-nav {
+      display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 8px;
+      margin: 0 -1px 8px; scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-nav button {
+      flex: 0 0 auto; min-height: 34px; padding: 7px 12px;
+      border-radius: 999px; white-space: nowrap;
+      color: #526057; background: #fff;
+    }
+    .category-nav button.active {
+      color: #fff; background: #167443; border-color: #167443;
+    }
     input, select, textarea {
       width: 100%; min-height: 42px; padding: 10px 11px;
       border: 1px solid #dce4dc; border-radius: 9px; background: white;
@@ -129,10 +142,10 @@
 
       <div class="toolbar">
         <input id="searchInput" type="search" placeholder="Cari nama, ID grup, atau brand…">
-        <select id="categoryFilter">
-          <option value="">Semua kategori</option>
-        </select>
       </div>
+      <nav class="category-nav" id="categoryNav" aria-label="Filter kategori produk">
+        <button type="button" class="active" data-category="">Semua</button>
+      </nav>
 
       <div class="list-heading">
         <h2>Daftar produk</h2>
@@ -233,7 +246,7 @@
         "description", "rich_text_description"
       ];
 
-      const state = { products: [], editingId: null };
+      const state = { products: [], editingId: null, activeCategory: "" };
       const $ = (selector) => document.querySelector(selector);
 
       function escapeHTML(value) {
@@ -283,13 +296,20 @@
           state.products.map((product) => String(product.product_type || "").trim()).filter(Boolean)
         )].sort((a, b) => a.localeCompare(b));
 
-        const current = $("#categoryFilter").value;
-        $("#categoryFilter").innerHTML =
-          '<option value="">Semua kategori</option>' +
-          categories.map((category) =>
-            '<option value="' + escapeHTML(category) + '">' + escapeHTML(category) + '</option>'
-          ).join("");
-        $("#categoryFilter").value = categories.includes(current) ? current : "";
+        if (state.activeCategory && !categories.includes(state.activeCategory)) {
+          state.activeCategory = "";
+        }
+
+        $("#categoryNav").innerHTML =
+          '<button type="button" data-category="" class="' +
+          (!state.activeCategory ? "active" : "") + '" aria-pressed="' +
+          (!state.activeCategory) + '">Semua</button>' +
+          categories.map((category) => {
+            const active = state.activeCategory === category;
+            return '<button type="button" data-category="' + escapeHTML(category) +
+              '" class="' + (active ? "active" : "") + '" aria-pressed="' + active + '">' +
+              escapeHTML(category) + '</button>';
+          }).join("");
 
         $("#categoryOptions").innerHTML = categories.map((category) =>
           '<option value="' + escapeHTML(category) + '"></option>'
@@ -309,7 +329,7 @@
       function renderProducts() {
         renderCategoryOptions();
         const keyword = $("#searchInput").value.trim().toLowerCase();
-        const category = $("#categoryFilter").value;
+        const category = state.activeCategory;
         const groups = groupProducts().filter((group) => {
           const p = group.first;
           const searchable = [p.title, group.key, ...group.items.flatMap((item) =>
@@ -522,7 +542,12 @@
       $("#addButton").addEventListener("click", () => openForm());
       $("#reloadButton").addEventListener("click", loadProducts);
       $("#searchInput").addEventListener("input", renderProducts);
-      $("#categoryFilter").addEventListener("change", renderProducts);
+      $("#categoryNav").addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-category]");
+        if (!button) return;
+        state.activeCategory = button.dataset.category || "";
+        renderProducts();
+      });
       $("#productForm").addEventListener("submit", saveProduct);
       $("#closeButton").addEventListener("click", closeForm);
       $("#closeGroupButton").addEventListener("click", () => $("#groupOverlay").classList.remove("open"));
