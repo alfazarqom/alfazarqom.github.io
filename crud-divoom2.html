@@ -146,8 +146,8 @@
   </div>
 
   <div class="overlay" id="groupOverlay">
-    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="formTitle">
-      <div class="dialog-head"><h2 id="formTitle">Kelompok produk</h2><button id="closeGroupButton" type="button" aria-label="Tutup">×</button></div>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="groupTitle">
+      <div class="dialog-head"><h2 id="groupTitle">Kelompok produk</h2><button id="closeGroupButton" type="button" aria-label="Tutup">×</button></div>
       <div class="dialog-body"><div id="groupSummary"></div><div id="groupVariants" class="variant-list"></div></div>
     </section>
   </div>
@@ -370,7 +370,7 @@
             '</div></div></div></article>';
         }).join("");
 
-        $("#formTitle").textContent = "Kelompok produk · " + (p.title || group.key);
+        $("#groupTitle").textContent = "Kelompok produk · " + (p.title || group.key);
         $("#groupSummary").innerHTML = '<p class="meta">Item Group ID: ' + escapeHTML(group.key) +
           ' · ' + group.items.length + ' varian</p>';
         $("#groupVariants").innerHTML = rows;
