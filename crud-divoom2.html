@@ -96,6 +96,16 @@
     .field small { color: #879188; font-size: 10px; }
     .form-actions { display: flex; gap: 8px; padding-top: 5px; }
     .form-actions button { flex: 1; }
+    .group-card { cursor: pointer; }
+    .variant-list { display: grid; gap: 10px; }
+    .variant-row { padding: 12px; border: 1px solid #e3e9e3; border-radius: 10px; background: #fff; }
+    .variant-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .variant-top h3 { margin: 0; font-size: 13px; }
+    .variant-images { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 10px; margin-top: 10px; }
+    .variant-image-main { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; }
+    .variant-extra-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .variant-extra-grid img { width: 44px; height: 44px; border-radius: 7px; object-fit: cover; }
+    .dialog-body { display: grid; gap: 12px; padding: 14px 0; }
     .status { min-height: 18px; margin: 10px 0 0; color: #68756c; font-size: 11px; }
     @media (min-width: 481px) {
       .app { min-height: 100vh; }
@@ -135,6 +145,12 @@
     </main>
   </div>
 
+  <div class="overlay" id="groupOverlay">
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+      <div class="dialog-head"><h2 id="formTitle">Kelompok produk</h2><button id="closeGroupButton" type="button" aria-label="Tutup">×</button></div>
+      <div class="dialog-body"><div id="groupSummary"></div><div id="groupVariants" class="variant-list"></div></div>
+    </section>
+  </div>
   <div class="overlay" id="formOverlay">
     <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="formTitle">
       <div class="dialog-head">
@@ -280,74 +296,143 @@
         ).join("");
       }
 
+      function groupProducts() {
+        const groups = new Map();
+        state.products.forEach((product) => {
+          const key = String(product.item_group_id ?? "");
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(product);
+        });
+        return [...groups.entries()].map(([key, items]) => ({ key, items, first: items[0] }));
+      }
+
       function renderProducts() {
         renderCategoryOptions();
-
         const keyword = $("#searchInput").value.trim().toLowerCase();
         const category = $("#categoryFilter").value;
-        const filtered = state.products.filter((product) => {
-          const searchable = [
-            product.title, product.item_group_id, product.brand, product.product_type
-          ].join(" ").toLowerCase();
+        const groups = groupProducts().filter((group) => {
+          const p = group.first;
+          const searchable = [p.title, group.key, ...group.items.flatMap((item) =>
+            [item.brand, item.product_type, item.color]
+          )].join(" ").toLowerCase();
           return searchable.includes(keyword) &&
-            (!category || String(product.product_type || "").trim() === category);
+            (!category || group.items.some((item) => String(item.product_type || "").trim() === category));
         });
 
-        $("#productCount").textContent = filtered.length + " dari " + state.products.length + " produk";
+        $("#productCount").textContent = groups.length + " kelompok · " +
+          groups.reduce((total, group) => total + group.items.length, 0) + " varian";
 
-        if (!filtered.length) {
+        if (!groups.length) {
           $("#productList").innerHTML =
-            '<div class="message">Tidak ada produk yang cocok. Coba kata kunci atau kategori lain.</div>';
+            '<div class="message">Tidak ada kelompok produk yang cocok. Coba kata kunci atau kategori lain.</div>';
           return;
         }
 
-        $("#productList").innerHTML = filtered.map((product) => {
-          const image = product.image_link
-            ? '<img src="' + escapeHTML(product.image_link) + '" alt="' + escapeHTML(product.title) + '" loading="lazy">'
+        $("#productList").innerHTML = groups.map((group) => {
+          const p = group.first;
+          const image = p.image_link
+            ? '<img src="' + escapeHTML(p.image_link) + '" alt="' + escapeHTML(p.title) + '" loading="lazy">'
             : '<div class="no-image">D</div>';
-
-          return '<article class="product">' +
-            image +
-            '<div><h3>' + escapeHTML(product.title || "Tanpa nama") + '</h3>' +
-            '<p class="meta">ID grup: ' + escapeHTML(product.item_group_id || "—") + '</p>' +
-            '<p class="meta">' + escapeHTML(product.product_type || "Tanpa kategori") +
-            ' · ' + escapeHTML(product.brand || "Tanpa brand") + '</p>' +
-            '<p class="price">' + formatPrice(product.sale_price || product.price) + '</p>' +
-            '<div class="actions">' +
-            '<button type="button" data-edit="' + escapeHTML(product.id) + '">Edit</button>' +
-            '<button class="danger" type="button" data-delete="' + escapeHTML(product.id) + '">Hapus</button>' +
-            '</div></div></article>';
+          const colors = [...new Set(group.items.map((item) => String(item.color || "").trim()).filter(Boolean))];
+          return '<article class="product group-card" data-group="' + escapeHTML(group.key) + '">' +
+            image + '<div><h3>' + escapeHTML(p.title || "Tanpa nama") + '</h3>' +
+            '<p class="meta">Item Group ID: ' + escapeHTML(group.key || "—") + '</p>' +
+            '<p class="meta">' + escapeHTML(p.product_type || "Tanpa kategori") + ' · ' +
+            escapeHTML(p.brand || "Tanpa brand") + '</p>' +
+            '<p class="price">' + group.items.length + ' varian</p>' +
+            '<p class="meta">Warna: ' + escapeHTML(colors.join(", ") || "Belum diatur") + '</p>' +
+            '<div class="actions"><button type="button" data-open-group="' + escapeHTML(group.key) + '">Kelola varian</button></div>' +
+            '</div></article>';
         }).join("");
 
-        $("#productList").querySelectorAll("[data-edit]").forEach((button) => {
-          button.addEventListener("click", () => {
-            const product = state.products.find((item) => String(item.id) === button.dataset.edit);
-            if (product) openForm(product);
-          });
+        $("#productList").querySelectorAll("[data-group], [data-open-group]").forEach((element) => {
+          element.addEventListener("click", () => openGroup(element.dataset.group || element.dataset.openGroup));
         });
+      }
 
-        $("#productList").querySelectorAll("[data-delete]").forEach((button) => {
-          button.addEventListener("click", () => deleteProduct(button.dataset.delete));
+      function openGroup(groupId) {
+        const group = groupProducts().find((item) => item.key === String(groupId));
+        if (!group) return;
+        const p = group.first;
+        const rows = group.items.map((item) => {
+          const extras = Array.isArray(item.additional_image_link)
+            ? item.additional_image_link : (item.additional_image_link ? [item.additional_image_link] : []);
+          return '<article class="variant-row">' +
+            '<div class="variant-top"><div><h3>' + escapeHTML(item.color || "Warna belum diatur") + '</h3>' +
+            '<p class="meta">Record ID: ' + escapeHTML(item.id) + '</p></div>' +
+            '<div class="actions"><button type="button" data-edit-variant="' + escapeHTML(item.id) + '">Edit varian</button></div></div>' +
+            '<div class="variant-images"><div>' +
+            (item.image_link ? '<img class="variant-image-main" src="' + escapeHTML(item.image_link) + '" alt="Gambar varian">' :
+              '<div class="no-image">D</div>') +
+            '</div><div><p class="meta">Gambar tambahan · ' + extras.length + '</p><div class="variant-extra-grid">' +
+            (extras.length ? extras.map((url) => '<img src="' + escapeHTML(url) + '" alt="Gambar tambahan" loading="lazy">').join("") :
+              '<span class="meta">Belum ada gambar tambahan.</span>') +
+            '</div></div></div></article>';
+        }).join("");
+
+        $("#formTitle").textContent = "Kelompok produk · " + (p.title || group.key);
+        $("#groupSummary").innerHTML = '<p class="meta">Item Group ID: ' + escapeHTML(group.key) +
+          ' · ' + group.items.length + ' varian</p>';
+        $("#groupVariants").innerHTML = rows;
+        $("#groupOverlay").classList.add("open");
+        $("#groupVariants").querySelectorAll("[data-edit-variant]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const record = group.items.find((item) => String(item.id) === button.dataset.editVariant);
+            if (record) openForm(record);
+          });
         });
       }
 
       function openForm(product = null) {
         state.editingId = product ? product.id : null;
-        $("#productTitle");
-        $("#formTitle").textContent = product ? "Edit produk" : "Tambah produk";
+        if (product) {
+          const extras = Array.isArray(product.additional_image_link)
+            ? product.additional_image_link : (product.additional_image_link ? [product.additional_image_link] : []);
+          $("#formTitle").textContent = "Edit varian produk";
+          $("#productForm").innerHTML = `
+            <input type="hidden" name="id" value="${escapeHTML(product.id)}">
+            <div class="field">
+              <label for="color">Color</label>
+              <input id="color" name="color" value="${escapeHTML(product.color || "")}">
+            </div>
+            <div class="field">
+              <label for="image_link">Image Link</label>
+              <input id="image_link" name="image_link" type="file" accept="image/jpeg,image/png,image/webp">
+              <small>Gambar saat ini: ${product.image_link ? '<a href="' + escapeHTML(product.image_link) + '" target="_blank" rel="noopener">Lihat gambar</a>' : 'Belum ada'} · Maksimal 5 MB.</small>
+            </div>
+            <div class="field">
+              <label for="additional_image_link">Additional Image Link</label>
+              <input id="additional_image_link" name="additional_image_link" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+              <small>Gambar tambahan saat ini: ${extras.length}. Pilih beberapa file untuk menambahkan gambar.</small>
+              <div class="preview">${extras.map((url) => '<img src="' + escapeHTML(url) + '" alt="Gambar tambahan saat ini">').join("")}</div>
+            </div>
+            <div class="form-actions">
+              <button id="cancelButton" type="button">Batal</button>
+              <button class="primary" id="saveButton" type="submit">Simpan</button>
+            </div>`;
+          $("#formOverlay").classList.add("open");
+          $("#cancelButton").addEventListener("click", closeForm);
+          return;
+        }
+
+        $("#formTitle").textContent = "Tambah produk";
         $("#productForm").reset();
-        $("#productForm").elements.id.value = product ? product.id : "";
-        PRODUCT_FIELDS.forEach((field) => {
-          $("#productForm").elements[field].value = product?.[field] ?? "";
-        });
-        $("#productForm").elements.brand.value ||= "Divoom";
-        $("#item_group_id").readOnly = Boolean(product);
-        $("#imageFile").required = !product;
-        $("#imageHelp").textContent = product
-          ? "Pilih file hanya jika ingin mengganti gambar utama. Maksimal 5 MB."
-          : "Gambar utama diperlukan saat menambah produk. Maksimal 5 MB.";
-        $("#saveButton").disabled = false;
-        $("#saveButton").textContent = "Simpan";
+        $("#productForm").innerHTML = `
+          <input type="hidden" name="id">
+          <div class="field"><label for="item_group_id">Item Group ID *</label><input id="item_group_id" name="item_group_id" required></div>
+          <div class="field"><label for="title">Nama produk *</label><input id="title" name="title" required></div>
+          <div class="field"><label for="product_type">Kategori (product_type)</label><input id="product_type" name="product_type" list="categoryOptions" placeholder="Contoh: Speakers"><datalist id="categoryOptions"></datalist></div>
+          <div class="field"><label for="brand">Brand</label><input id="brand" name="brand" value="Divoom"></div>
+          <div class="field"><label for="price">Harga *</label><input id="price" name="price" type="number" min="0" step="1" required></div>
+          <div class="field"><label for="sale_price">Harga diskon</label><input id="sale_price" name="sale_price" type="number" min="0" step="1"></div>
+          <div class="field"><label for="availability">Availability</label><input id="availability" name="availability" placeholder="in stock / out of stock"></div>
+          <div class="field"><label for="color">Warna</label><input id="color" name="color"></div>
+          <div class="field"><label for="size">Ukuran</label><input id="size" name="size"></div>
+          <div class="field"><label for="description">Deskripsi singkat</label><textarea id="description" name="description"></textarea></div>
+          <div class="field"><label for="rich_text_description">Deskripsi lengkap</label><textarea id="rich_text_description" name="rich_text_description"></textarea></div>
+          <div class="field"><label for="imageFile">Gambar utama *</label><input id="imageFile" name="imageFile" type="file" accept="image/jpeg,image/png,image/webp" required><small>Maksimal 5 MB.</small></div>
+          <div class="form-actions"><button id="cancelButton" type="button">Batal</button><button class="primary" id="saveButton" type="submit">Simpan</button></div>`;
+        $("#cancelButton").addEventListener("click", closeForm);
         $("#formOverlay").classList.add("open");
       }
 
@@ -370,37 +455,44 @@
       async function saveProduct(event) {
         event.preventDefault();
         const form = event.currentTarget;
-        const image = $("#imageFile").files[0];
         const isEditing = Boolean(state.editingId);
-
-        if (!isEditing && !image) {
-          $("#pageStatus").textContent = "Pilih gambar utama untuk produk baru.";
-          return;
-        }
-        if (image && image.size > 5 * 1024 * 1024) {
-          $("#pageStatus").textContent = "Ukuran gambar maksimal 5 MB.";
-          return;
-        }
-
         const button = $("#saveButton");
         button.disabled = true;
         button.textContent = "Menyimpan…";
 
         try {
-          const body = new FormData();
-          body.append("product", JSON.stringify(collectProductData(form)));
-
           if (isEditing) {
+            const mainImage = form.elements.image_link.files[0];
+            const extraImages = [...form.elements.additional_image_link.files];
+            if (mainImage && mainImage.size > 5 * 1024 * 1024) throw new Error("Gambar utama maksimal 5 MB.");
+            if (extraImages.some((file) => file.size > 5 * 1024 * 1024)) throw new Error("Setiap gambar tambahan maksimal 5 MB.");
+            const body = new FormData();
             body.append("id", String(state.editingId));
-            if (image) body.append("image_link", image);
+            body.append("product", JSON.stringify({ color: form.elements.color.value.trim() || null }));
+            if (mainImage) body.append("image_link", mainImage);
             await request("", { method: "PATCH", body });
+
+            for (const file of extraImages) {
+              const extraBody = new FormData();
+              extraBody.append("id", String(state.editingId));
+              extraBody.append("additional_action", "add");
+              extraBody.append("additional_image_link", file);
+              await request("", { method: "PATCH", body: extraBody });
+            }
           } else {
+            const image = form.elements.imageFile.files[0];
+            if (!image) throw new Error("Pilih gambar utama untuk produk baru.");
+            if (image.size > 5 * 1024 * 1024) throw new Error("Ukuran gambar maksimal 5 MB.");
+            const body = new FormData();
+            body.append("product", JSON.stringify(collectProductData(form)));
             body.append("image_link", image);
             await request("", { method: "POST", body });
           }
 
           closeForm();
-          $("#pageStatus").textContent = "Produk berhasil disimpan.";
+          $("#pageStatus").textContent = isEditing
+            ? "Varian berhasil diperbarui."
+            : "Produk berhasil ditambahkan.";
           await loadProducts();
         } catch (error) {
           $("#pageStatus").textContent = "Gagal menyimpan: " + error.message;
@@ -429,7 +521,9 @@
       $("#categoryFilter").addEventListener("change", renderProducts);
       $("#productForm").addEventListener("submit", saveProduct);
       $("#closeButton").addEventListener("click", closeForm);
+      $("#closeGroupButton").addEventListener("click", () => $("#groupOverlay").classList.remove("open"));
       $("#cancelButton").addEventListener("click", closeForm);
+      $("#groupOverlay").addEventListener("click", (event) => { if (event.target === $("#groupOverlay")) $("#groupOverlay").classList.remove("open"); });
       $("#formOverlay").addEventListener("click", (event) => {
         if (event.target === $("#formOverlay")) closeForm();
       });
