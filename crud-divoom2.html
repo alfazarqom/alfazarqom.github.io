@@ -466,6 +466,10 @@
             const extraImages = [...form.elements.additional_image_link.files];
             if (mainImage && mainImage.size > 5 * 1024 * 1024) throw new Error("Gambar utama maksimal 5 MB.");
             if (extraImages.some((file) => file.size > 5 * 1024 * 1024)) throw new Error("Setiap gambar tambahan maksimal 5 MB.");
+            const existingExtras = Array.isArray(state.products.find((item) => String(item.id) === String(state.editingId))?.additional_image_link)
+              ? state.products.find((item) => String(item.id) === String(state.editingId)).additional_image_link.length
+              : (state.products.find((item) => String(item.id) === String(state.editingId))?.additional_image_link ? 1 : 0);
+            if (existingExtras + extraImages.length > 5) throw new Error("Maksimal 5 gambar tambahan per varian.");
             const body = new FormData();
             body.append("id", String(state.editingId));
             body.append("product", JSON.stringify({ color: form.elements.color.value.trim() || null }));
